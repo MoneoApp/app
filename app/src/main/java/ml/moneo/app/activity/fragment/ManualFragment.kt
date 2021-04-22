@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -27,6 +28,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private lateinit var fragment: ARFragment
 
     private var active: Boolean = false
+    private var anchor: Anchor? = null
+    private var currentNode: AnchorNode? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,10 +48,20 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
         binding.includedSteps.nextButton.setOnClickListener {
             manualViewModel.next()
+
+            if(active)
+            {
+                showLayout(this.anchor!!)
+            }
         }
 
         binding.includedSteps.previousButton.setOnClickListener {
             manualViewModel.previous()
+
+            if(active)
+            {
+                showLayout(this.anchor!!)
+            }
         }
 
         fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
@@ -70,52 +83,53 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         val images = frame?.getUpdatedTrackables(AugmentedImage::class.java)
 
         images?.filter { it.trackingState == TrackingState.TRACKING }?.forEach { image ->
-            val anchor = image.createAnchor(image.centerPose)
+            this.anchor = image.createAnchor(image.centerPose)
 
             if (!active) {
                 active = true
-                showLayout(anchor)
+                showLayout(this.anchor!!)
             }
         }
     }
 
     private fun showLayout(anchor: Anchor) {
-        val temp = listOf(
-            Vector3(0f, 0f, 0.006f),
-            Vector3(0f, 0f, -0.006f),
-            Vector3(0f, 0f, -0.018f),
-        )
-        val iterator = temp.iterator()
-
-        iterator.forEach { position ->
-            ViewRenderable.builder()
-                .setView(fragment.context, R.layout.button)
-                .build()
-                .thenAccept { renderable ->
-                    renderable.isShadowCaster = false
-                    renderable.isShadowReceiver = false
-
-                    val anchorNode = AnchorNode(anchor)
-                    val node = TransformableNode(this.fragment.transformationSystem)
-
-                    node.renderable = renderable
-                    node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                    node.localPosition = position
-                    node.setParent(anchorNode)
-
-                    this.fragment.arSceneView.scene.addChild(anchorNode)
-                }
-                .exceptionally { error ->
-                    activity?.let {
-                        AlertDialog.Builder(it)
-                            .setMessage(error.message)
-                            .setTitle("Error")
-                            .create()
-                            .show()
-                    }
-
-                    return@exceptionally null
-                }
+        if(currentNode != null)
+        {
+            fragment.arSceneView.scene.removeChild(currentNode)
         }
+        else
+        {
+            fragment.planeDiscoveryController.hide()
+        }
+
+        ViewRenderable.builder()
+            .setView(fragment.context, R.layout.button)
+            .build()
+            .thenAccept { renderable ->
+                renderable.isShadowCaster = false
+                renderable.isShadowReceiver = false
+
+                val anchorNode = AnchorNode(anchor)
+                val node = TransformableNode(this.fragment.transformationSystem)
+
+                node.renderable = renderable
+                node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
+                node.localPosition = manualViewModel.getButtonPosition()
+                node.setParent(anchorNode)
+
+                currentNode = anchorNode
+                this.fragment.arSceneView.scene.addChild(anchorNode)
+            }
+            .exceptionally { error ->
+                activity?.let {
+                    AlertDialog.Builder(it)
+                        .setMessage(error.message)
+                        .setTitle("Error")
+                        .create()
+                        .show()
+                }
+
+                return@exceptionally null
+            }
     }
 }

@@ -3,6 +3,7 @@ package ml.moneo.app.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.ar.sceneform.math.Vector3
 import ml.moneo.app.model.Interaction
 import ml.moneo.app.model.Manual
 import ml.moneo.app.model.Overlay
@@ -18,6 +19,11 @@ class ManualViewModel : ViewModel() {
 
     fun getDescription(): String {
         return currentStep.value?.let { manual.steps[it].description }!!
+    }
+
+    fun getButtonPosition(): Vector3
+    {
+        return currentStep.value?.let { Vector3(manual.steps[it].interaction.x, 0.0f, manual.steps[it].interaction.y) }!!
     }
 
     fun next() {
@@ -41,6 +47,7 @@ class ManualViewModel : ViewModel() {
     }
 
     private fun createTestManual(): Manual {
+
         return Manual(
             id = "0",
             name = "Test manual",
@@ -51,7 +58,7 @@ class ManualViewModel : ViewModel() {
                     Interaction(
                         "0",
                         0f,
-                        0f,
+                        0.006f,
                         10f,
                         10f,
                         "TestButton0",
@@ -64,8 +71,8 @@ class ManualViewModel : ViewModel() {
                     "Druk op de 'Coole knop' die aangegeven is in het rood.",
                     Interaction(
                         "1",
-                        5f,
-                        3f,
+                        .0f,
+                        -.006f,
                         10f,
                         10f,
                         "TestButton1",
@@ -78,8 +85,8 @@ class ManualViewModel : ViewModel() {
                     "Druk nu op de 'Nog coolere knop' die ook aangegeven is in het rood",
                     Interaction(
                         "2",
-                        2f,
-                        6f,
+                        .0f,
+                        -.018f,
                         10f,
                         10f,
                         "TestButton2",
@@ -92,8 +99,8 @@ class ManualViewModel : ViewModel() {
                     "Zet nu de afstandsbediening uit door de uitknop in te drukken.",
                     Interaction(
                         "3",
-                        1f,
-                        4f,
+                        .0f,
+                        .006f,
                         10f,
                         10f,
                         "TestButton3",
@@ -106,8 +113,8 @@ class ManualViewModel : ViewModel() {
                     "Bedenk dat die laatste stap eigenlijk niet zo slim was, en zet de afstandsbediening toch maar weer aan door de aanknop in te drukken.",
                     Interaction(
                         "4",
-                        7f,
-                        3f,
+                        .0f,
+                        -.006f,
                         10f,
                         10f,
                         "TestButton4",
@@ -120,8 +127,8 @@ class ManualViewModel : ViewModel() {
                     "Gefeliciteerd. Je hebt zojuist de afstandsbediening(Dus niet de televisie zelf) aan, daarna uit en tot slot weer aan gezet. Dat heb je heel goed gedaan.",
                     Interaction(
                         "5",
-                        4f,
-                        2f,
+                        .0f,
+                        -.018f,
                         10f,
                         10f,
                         "TestButton5",
