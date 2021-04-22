@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Moneo" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorAccent">@color/yellow</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Moneo.Splash">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+</resources>
