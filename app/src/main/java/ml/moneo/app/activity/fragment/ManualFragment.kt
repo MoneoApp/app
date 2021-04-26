@@ -67,6 +67,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
         fragment.arSceneView.scene.addOnUpdateListener(this)
 
+        fragment.arSceneView.planeRenderer.isEnabled = false;
+
         return binding.root
     }
 
