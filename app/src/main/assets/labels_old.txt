@@ -1,0 +1,4 @@
+argon
+samsung
+nintendo
+microsoft

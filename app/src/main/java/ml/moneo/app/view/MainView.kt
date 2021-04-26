@@ -35,7 +35,7 @@ fun WelcomeView() {
     val context = LocalContext.current
     val labels = remember {
         try {
-            val inputStream = context.assets.open("labels_new.txt")
+            val inputStream = context.assets.open("labels.txt")
             val size = inputStream.available()
             val buffer = ByteArray(size)
 

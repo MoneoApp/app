@@ -1,5 +1,0 @@
-KPN-remote
-Playstation controller
-Left-joycon
-Right-joycon
-Background
