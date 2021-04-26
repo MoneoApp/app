@@ -14,7 +14,7 @@ class TFAnalyzer(
     private val onError: () -> Unit
 ) : ImageAnalysis.Analyzer {
     private val model = LocalModel.Builder()
-        .setAssetFilePath("model.tflite")
+        .setAssetFilePath("model_new.tflite")
         .build()
     private val options = CustomImageLabelerOptions.Builder(model)
         .setMaxResultCount(1)

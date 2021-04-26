@@ -35,7 +35,7 @@ fun WelcomeView() {
     val context = LocalContext.current
     val labels = remember {
         try {
-            val inputStream = context.assets.open("labels.txt")
+            val inputStream = context.assets.open("labels_new.txt")
             val size = inputStream.available()
             val buffer = ByteArray(size)
 
@@ -125,7 +125,7 @@ fun WelcomeView() {
     }
 
     DisposableEffect(label) {
-        if (label == null) {
+        if (label == null || label == "Background") {
             return@DisposableEffect onDispose {}
         }
 
