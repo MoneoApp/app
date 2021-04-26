@@ -40,7 +40,7 @@ fun WelcomeView() {
             val buffer = ByteArray(size)
 
             inputStream.read(buffer)
-            String(buffer).split("\n")
+            String(buffer).split("\n", "\r\n")
         } catch (e: IOException) {
             e.printStackTrace()
             listOf()
