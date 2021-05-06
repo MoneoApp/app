@@ -24,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
 import ml.moneo.app.activity.ManualActivity
+import ml.moneo.app.activity.ProductsOverviewActivity
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
@@ -57,7 +58,7 @@ fun WelcomeView() {
                         text = label ?: "",
                         modifier = Modifier.padding(8.dp)
                     )
-                    Button({ openActivity(context, ManualActivity::class.java) }) {
+                    Button({ openActivity(context, ProductsOverviewActivity::class.java) }) {
                         Text(stringResource(R.string.manual))
                     }
                 }

@@ -54,7 +54,6 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                 showLayout(this.anchor!!)
             }
         }
-
         binding.includedSteps.previousButton.setOnClickListener {
             manualViewModel.previous()
 
