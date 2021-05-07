@@ -1,5 +1,7 @@
 package ml.moneo.app.view
 
+import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat.startActivity
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -58,7 +61,13 @@ fun WelcomeView() {
                         text = label ?: "",
                         modifier = Modifier.padding(8.dp)
                     )
-                    Button({ openActivity(context, ProductsOverviewActivity::class.java) }) {
+                    Button({
+                        open = false
+                        val intent = Intent(context, ProductsOverviewActivity::class.java).apply {
+                            putExtra("PRODUCT_NAME", label)
+                        }
+                        startActivity(context, intent, null)
+                    }) {
                         Text(stringResource(R.string.manual))
                     }
                 }

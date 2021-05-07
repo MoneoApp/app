@@ -6,22 +6,21 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/product_image"
+        android:id="@+id/guide_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/background_gray"
-        android:src="@drawable/default_remote" />
+        android:src="@drawable/default_guide" />
 
     <TextView
-        android:id="@+id/product_name"
+        android:id="@+id/guide_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Remote"
-        app:layout_constraintEnd_toEndOf="@+id/product_image"
-        app:layout_constraintStart_toStartOf="@+id/product_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_image" />
+        android:text="Guide"
+        app:layout_constraintEnd_toEndOf="@+id/guide_image"
+        app:layout_constraintStart_toStartOf="@+id/guide_image"
+        app:layout_constraintTop_toBottomOf="@+id/guide_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

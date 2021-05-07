@@ -1,17 +1,22 @@
 package ml.moneo.app.view.component
 
-import android.util.Log
+import android.annotation.SuppressLint
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ml.moneo.app.R
+import ml.moneo.app.model.Guide
 import ml.moneo.app.model.Product
+import ml.moneo.app.model.Remote
 
 class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
 
     var items: List<Product> = listOf()
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -46,10 +51,10 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>(
             this.itemView.findViewById<TextView>(R.id.product_name).text = product.name
 
             //TODO: Set image of product async from cache/download
+            this.itemView.findViewById<ImageView>(R.id.product_image).setImageResource(product.resId)
         }
 
         override fun onClick(v: View?) {
-            //itemView.callOnClick()
         }
     }
 }

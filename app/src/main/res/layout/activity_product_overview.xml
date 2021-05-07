@@ -43,10 +43,12 @@
 
     <Button
         android:id="@+id/product_close_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/close"
+        android:backgroundTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
