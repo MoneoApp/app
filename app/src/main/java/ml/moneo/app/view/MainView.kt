@@ -44,7 +44,7 @@ fun WelcomeView() {
             val buffer = ByteArray(size)
 
             inputStream.read(buffer)
-            String(buffer).split("\n")
+            String(buffer).split("\n", "\r\n")
         } catch (e: IOException) {
             e.printStackTrace()
             listOf()
@@ -135,7 +135,7 @@ fun WelcomeView() {
     }
 
     DisposableEffect(label) {
-        if (label == null) {
+        if (label == null || label == "Background") {
             return@DisposableEffect onDispose {}
         }
 

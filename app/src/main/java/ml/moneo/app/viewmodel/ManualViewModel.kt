@@ -57,8 +57,8 @@ class ManualViewModel : ViewModel() {
                     "Zet de afstandbediening aan.",
                     Interaction(
                         "0",
-                        0f,
                         0.006f,
+                        0f,
                         10f,
                         10f,
                         "TestButton0",
@@ -71,8 +71,8 @@ class ManualViewModel : ViewModel() {
                     "Druk op de 'Coole knop' die aangegeven is in het rood.",
                     Interaction(
                         "1",
-                        .0f,
                         -.006f,
+                        .0f,
                         10f,
                         10f,
                         "TestButton1",
@@ -85,8 +85,8 @@ class ManualViewModel : ViewModel() {
                     "Druk nu op de 'Nog coolere knop' die ook aangegeven is in het rood",
                     Interaction(
                         "2",
-                        .0f,
                         -.018f,
+                        .0f,
                         10f,
                         10f,
                         "TestButton2",
@@ -99,8 +99,8 @@ class ManualViewModel : ViewModel() {
                     "Zet nu de afstandsbediening uit door de uitknop in te drukken.",
                     Interaction(
                         "3",
-                        .0f,
                         .006f,
+                        .0f,
                         10f,
                         10f,
                         "TestButton3",
@@ -113,8 +113,8 @@ class ManualViewModel : ViewModel() {
                     "Bedenk dat die laatste stap eigenlijk niet zo slim was, en zet de afstandsbediening toch maar weer aan door de aanknop in te drukken.",
                     Interaction(
                         "4",
-                        .0f,
                         -.006f,
+                        .0f,
                         10f,
                         10f,
                         "TestButton4",
@@ -127,8 +127,8 @@ class ManualViewModel : ViewModel() {
                     "Gefeliciteerd. Je hebt zojuist de afstandsbediening(Dus niet de televisie zelf) aan, daarna uit en tot slot weer aan gezet. Dat heb je heel goed gedaan.",
                     Interaction(
                         "5",
-                        .0f,
                         -.018f,
+                        .0f,
                         10f,
                         10f,
                         "TestButton5",
