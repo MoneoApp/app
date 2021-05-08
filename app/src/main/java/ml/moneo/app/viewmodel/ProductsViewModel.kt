@@ -1,26 +1,39 @@
 package ml.moneo.app.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import ml.moneo.app.R
 import ml.moneo.app.model.Guide
-import ml.moneo.app.model.Product
 import ml.moneo.app.model.Remote
 
 class ProductsViewModel : ViewModel() {
     private val availableProducts = MutableLiveData<List<Remote>>().apply {
         value = getProducts()
     }
-    private val availableGuides = MutableLiveData<List<Guide>>().apply {
-        value = getGuides()
-    }
+    private var selectedProduct = MutableLiveData<Remote>()
+    private val productSearchString = MutableLiveData<String>()
 
     fun getAllProducts(): LiveData<List<Remote>> {
         return availableProducts
     }
 
-    fun getGuidesByRemoteId(remoteId: Int): List<Guide>? {
-        return availableGuides.value?.filter { it.remoteId == remoteId}
+    fun setSelectedProduct(remoteId: Int) {
+        selectedProduct.value = availableProducts.value?.find { it.remoteId == remoteId }
+    }
+
+    fun getSelectedProduct(): LiveData<Remote> {
+        return selectedProduct
+    }
+
+    fun setProductSearchString(searchString: String) {
+        productSearchString.value = searchString
+    }
+
+    fun getProductSearchString(): MutableLiveData<String> {
+        return productSearchString
+    }
+
+    fun resetSelectedProduct(){
+        selectedProduct = MutableLiveData<Remote>()
     }
 
     //Update the searched products
@@ -49,18 +62,6 @@ class ProductsViewModel : ViewModel() {
             Remote("Samsung 32KL344JK", 6, R.drawable.default_remote),
             Remote("Logitech GRT676HN", 7, R.drawable.default_remote),
             Remote("KPN Remoto", 8, R.drawable.default_remote)
-        )
-    }
-
-    private fun getGuides(): List<Guide> {
-        return listOf(
-            Guide("Aflevering kijken", 1, 1, R.drawable.default_guide),
-            Guide("Ander kanaal", 2, 1, R.drawable.default_guide),
-            Guide("Televisie uitzetten", 3, 1, R.drawable.default_guide),
-
-            Guide("Instellingen scherm openen", 4, 2, R.drawable.default_guide),
-            Guide("Ander kanaal", 5, 2, R.drawable.default_guide),
-            Guide("Televisie uitzetten", 6, 2, R.drawable.default_guide),
         )
     }
 }

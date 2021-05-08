@@ -1,6 +1,7 @@
 package ml.moneo.app.view.component
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +56,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>(
         }
 
         override fun onClick(v: View?) {
+            //TODO: Set selected color
         }
     }
 }
