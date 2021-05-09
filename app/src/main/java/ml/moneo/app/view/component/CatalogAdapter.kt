@@ -1,8 +1,6 @@
 package ml.moneo.app.view.component
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ml.moneo.app.R
-import ml.moneo.app.model.Guide
+import ml.moneo.app.activity.fragment.ProductsCatalogFragment
 import ml.moneo.app.model.Product
-import ml.moneo.app.model.Remote
 
-class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
+class CatalogAdapter : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() {
 
     var items: List<Product> = listOf()
         @SuppressLint("NotifyDataSetChanged")
@@ -28,12 +25,12 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ProductsAdapter.ProductViewHolder {
+    ): CatalogAdapter.CatalogViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.product_view, parent, false)
-        return ProductViewHolder(view)
+        return CatalogViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CatalogViewHolder, position: Int) {
         holder.bindProduct(items[position])
     }
 
@@ -41,7 +38,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>(
         return items.size
     }
 
-    inner class ProductViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview),
+    inner class CatalogViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview),
         View.OnClickListener {
 
         init {

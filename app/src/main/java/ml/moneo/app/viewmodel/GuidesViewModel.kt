@@ -1,5 +1,6 @@
 package ml.moneo.app.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,18 +13,24 @@ class GuidesViewModel : ViewModel() {
         value = getGuides()
     }
 
-    private var selectedGuide = MutableLiveData<Guide>()
+    private var selectedGuide = MutableLiveData<Guide?>()
 
     fun getGuidesByRemoteId(remoteId: Int): List<Guide>? {
         return availableGuides.value?.filter { it.remoteId == remoteId }
     }
 
-    fun getSelectedGuide(): LiveData<Guide> {
+    fun getSelectedGuide(): MutableLiveData<Guide?> {
+
+        Log.d("products", "selected: " + selectedGuide)
         return selectedGuide
     }
 
     fun setSelectedGuide(guideId: Int) {
         selectedGuide.value = availableGuides.value?.find { it.guideId == guideId }
+    }
+
+    fun resetSelectedGuide() {
+        selectedGuide.value = null
     }
 
     private fun getGuides(): List<Guide> {

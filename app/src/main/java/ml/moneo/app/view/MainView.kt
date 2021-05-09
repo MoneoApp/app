@@ -1,7 +1,6 @@
 package ml.moneo.app.view
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,9 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
-import ml.moneo.app.activity.ManualActivity
-import ml.moneo.app.activity.ProductsOverviewActivity
-import ml.moneo.app.util.openActivity
+import ml.moneo.app.activity.CatalogsOverviewActivity
 import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
 
@@ -63,7 +60,7 @@ fun WelcomeView() {
                     )
                     Button({
                         open = false
-                        val intent = Intent(context, ProductsOverviewActivity::class.java).apply {
+                        val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
                             putExtra("PRODUCT_NAME", label)
                         }
                         startActivity(context, intent, null)
