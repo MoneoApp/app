@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ml.moneo.app.R
 import ml.moneo.app.model.Guide
+import ml.moneo.app.model.Remote
 
 class GuidesViewModel : ViewModel() {
     private val availableGuides = MutableLiveData<List<Guide>>().apply {
         value = getGuides()
     }
 
-    private val selectedGuide = MutableLiveData<Guide>()
+    private var selectedGuide = MutableLiveData<Guide>()
 
     fun getGuidesByRemoteId(remoteId: Int): List<Guide>? {
         return availableGuides.value?.filter { it.remoteId == remoteId }

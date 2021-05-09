@@ -1,9 +1,9 @@
 package ml.moneo.app.activity
 
-import android.opengl.Visibility
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ml.moneo.app.databinding.ActivityProductOverviewBinding
 import ml.moneo.app.model.Guide
 import ml.moneo.app.model.Remote
+import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.ProductsAdapter
 import ml.moneo.app.viewmodel.GuidesViewModel
 import ml.moneo.app.viewmodel.ProductsViewModel
-import kotlin.reflect.typeOf
 
 class ProductsOverviewActivity : AppCompatActivity() {
 
@@ -35,35 +35,42 @@ class ProductsOverviewActivity : AppCompatActivity() {
         binding = ActivityProductOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        intent.getStringExtra("PRODUCT_NAME")?.let { productsViewModel.setProductSearchString(it) }
-        //binding.productsInput.editText?.setText(productsViewModel.getProductSearchString().value)
+        intent.getStringExtra("PRODUCT_NAME")?.let {
+            productsViewModel.searchProducts(it)
+        }
+        productsViewModel.getSearchString().observe(this, {
+            binding.productsInput.editText?.setText(it)
+        })
+        binding.productsInput.editText?.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
-        guidesViewModel.getSelectedGuide().observe(this, { guide ->
-            if (guide != null) {
-                binding.productStartGuideButton.visibility = View.VISIBLE
-            } else {
-                binding.productStartGuideButton.visibility = View.INVISIBLE
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                //TODO: Check wether products
             }
         })
 
-        productsViewModel.getAllProducts().observe(this, { products ->
+        productsViewModel.getAllProductsBySearch().observe(this, { products ->
             setupProductsRecyclerview()
+            Log.d("products", products.toString())
             productsAdapter.apply { items = products }
         })
 
-        binding.productCloseButton.setOnClickListener {
-            //TODO: Check if we are viewing remotes or guides
-            if (productsViewModel.getSelectedProduct().value != null) {
-                applyProductsToView()
-            } else {
-                finish()
-            }
-        }
-
-        binding.productStartGuideButton.setOnClickListener {
-
-
-        }
+//        binding.productCloseButton.setOnClickListener {
+//            if (productsViewModel.getSelectedProduct().value != null) {
+//                //applyProductsToView()
+//                //allowGuideStart(false)
+//            } else {
+//                finish()
+//            }
+//        }
+//
+//        binding.productStartGuideButton.setOnClickListener {
+//            openActivity(this, ManualActivity::class.java, false)
+//        }
 
         //Apply new items to adapter
         //Change onclicks?
@@ -82,19 +89,13 @@ class ProductsOverviewActivity : AppCompatActivity() {
             if (product is Remote) {
                 val remote: Remote = product
                 productsAdapter.apply {
-                    items = guidesViewModel.getGuidesByRemoteId(remote.remoteId)!!
                     productsViewModel.setSelectedProduct(remote.remoteId)
+                    items = guidesViewModel.getGuidesByRemoteId(remote.remoteId)!!
                 }
             } else if (product is Guide) {
                 val guide: Guide = product
                 guidesViewModel.setSelectedGuide(guide.guideId)
             }
         }
-    }
-
-    private fun applyProductsToView() {
-        Log.d("products", "applied items before: " + productsAdapter.items)
-        productsAdapter.apply { items = productsViewModel.getAllProducts().value!! }
-        Log.d("products", "applied items after: " + productsAdapter.items)
     }
 }

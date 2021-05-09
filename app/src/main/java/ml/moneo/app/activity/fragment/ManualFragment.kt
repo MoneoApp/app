@@ -54,6 +54,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                 showLayout(this.anchor!!)
             }
         }
+
         binding.includedSteps.previousButton.setOnClickListener {
             manualViewModel.previous()
 
@@ -61,6 +62,10 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             {
                 showLayout(this.anchor!!)
             }
+        }
+
+        binding.includedSteps.stepsCloseButton.setOnClickListener{
+            activity?.finish()
         }
 
         fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
