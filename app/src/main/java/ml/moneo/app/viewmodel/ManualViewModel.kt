@@ -21,9 +21,14 @@ class ManualViewModel : ViewModel() {
         return currentStep.value?.let { manual.steps[it].description }!!
     }
 
-    fun getButtonPosition(): Vector3
-    {
-        return currentStep.value?.let { Vector3(manual.steps[it].interaction.x, 0.0f, manual.steps[it].interaction.y) }!!
+    fun getButtonPosition(): Vector3 {
+        return currentStep.value?.let {
+            Vector3(
+                manual.steps[it].interaction.x,
+                0.0f,
+                manual.steps[it].interaction.y
+            )
+        }!!
     }
 
     fun next() {
@@ -47,7 +52,6 @@ class ManualViewModel : ViewModel() {
     }
 
     private fun createTestManual(): Manual {
-
         return Manual(
             id = "0",
             name = "Test manual",

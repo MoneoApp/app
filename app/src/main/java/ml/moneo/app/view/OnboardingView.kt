@@ -21,6 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.exception.ApolloException
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import ml.moneo.GetDevicesQuery
 import ml.moneo.app.activity.MainActivity
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.theme.Yellow
@@ -87,6 +93,43 @@ fun OnboardingView() {
                 Text(
                     modifier = Modifier.padding(horizontal = 24.dp),
                     text = "Start",
+                    fontSize = 20.sp
+                )
+            }
+            TextButton(
+                onClick = {
+                    // todo: use hilt to inject into view models
+                    val client = ApolloClient
+                        .builder()
+                        .serverUrl("https://staging.moneo.ml/api")
+                        .build()
+
+                    GlobalScope.launch {
+                        val response = try {
+                            // todo: fix authorization rule on api
+                            client.query(GetDevicesQuery()).await()
+                        } catch (e: ApolloException) {
+                            return@launch
+                        }
+
+                        val devices = response.data?.devices
+                        if (devices == null || response.hasErrors()) {
+                            println(response.errors?.firstOrNull()?.message);
+
+                            return@launch
+                        }
+
+                        devices.forEach { device ->
+                            println("${device.brand} ${device.model}")
+                        }
+                    }
+                },
+                shape = CircleShape,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    text = "Test",
                     fontSize = 20.sp
                 )
             }
