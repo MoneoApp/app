@@ -13,7 +13,6 @@ import ml.moneo.app.viewmodel.ProductsViewModel
 class CatalogsOverviewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCatalogsBinding
-    private val productsViewModel: ProductsViewModel by viewModels()
 
     private val PRODUCTS_CATALOG_FRAGMENT = "products_catalog_fragment"
     private val GUIDES_CATALOG_FRAGMENT = "guides_catalog_fragment"
@@ -21,8 +20,7 @@ class CatalogsOverviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (savedInstanceState != null) return
-
+        supportActionBar?.hide()
         binding = ActivityCatalogsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -33,12 +31,10 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         when (selectedFragment) {
             PRODUCTS_CATALOG_FRAGMENT -> {
                 if (supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT) != null) {
-                    //if the fragment exists, show it.
                     supportFragmentManager.beginTransaction()
                         .show(supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT)!!)
                         .commit();
                 } else {
-                    //if the fragment does not exist, add it to fragment manager.
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.catalog_fragment_container,
@@ -48,7 +44,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .commit();
                 }
                 if (supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT) != null) {
-                    //if the other fragment is visible, hide it.
                     supportFragmentManager.beginTransaction()
                         .hide(supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT)!!)
                         .commit();
@@ -57,12 +52,10 @@ class CatalogsOverviewActivity : AppCompatActivity() {
 
             GUIDES_CATALOG_FRAGMENT -> {
                 if (supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT) != null) {
-                    //if the fragment exists, show it.
                     supportFragmentManager.beginTransaction()
                         .show(supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT)!!)
                         .commit();
                 } else {
-                    //if the fragment does not exist, add it to fragment manager.
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.catalog_fragment_container,
@@ -72,7 +65,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .commit();
                 }
                 if (supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT) != null) {
-                    //if the other fragment is visible, hide it.
                     supportFragmentManager.beginTransaction()
                         .hide(supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT)!!)
                         .commit();
