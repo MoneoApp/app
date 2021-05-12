@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import com.apollographql.apollo.ApolloClient
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.WelcomeView
 
