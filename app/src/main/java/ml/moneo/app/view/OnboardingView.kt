@@ -31,6 +31,7 @@ import ml.moneo.app.activity.MainActivity
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.theme.Yellow
 import ml.moneo.app.R
+import ml.moneo.app.util.apolloClient
 
 @Composable
 fun OnboardingView() {
@@ -99,14 +100,10 @@ fun OnboardingView() {
             TextButton(
                 onClick = {
                     // todo: use hilt to inject into view models
-                    val client = ApolloClient
-                        .builder()
-                        .serverUrl("https://staging.moneo.ml/api")
-                        .build()
+                    val client = apolloClient()
 
                     GlobalScope.launch {
                         val response = try {
-                            // todo: fix authorization rule on api
                             client.query(GetDevicesQuery()).await()
                         } catch (e: ApolloException) {
                             return@launch
