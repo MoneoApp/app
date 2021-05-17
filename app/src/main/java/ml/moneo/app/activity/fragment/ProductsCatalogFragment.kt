@@ -14,11 +14,11 @@ import ml.moneo.app.model.Remote
 import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.ProductsViewModel
 
-class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview) {
+class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview),
+    CatalogsOverviewActivity.CloseClickListener {
 
     private lateinit var binding: FragmentProductOverviewBinding
     private lateinit var productsViewModel: ProductsViewModel
-
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var catalogAdapter: CatalogAdapter
@@ -37,21 +37,23 @@ class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview) {
 //        }
 
         productsViewModel.getSearchString().observe(viewLifecycleOwner, {
-            binding.productsInput.editText?.setText(it)
+            binding.catalogInput.editText?.setText(it)
         })
 
         productsViewModel.getAllProductsBySearch().observe(requireActivity(), { products ->
-            setupProductsRecyclerview()
+            //setupProductsRecyclerview()
             catalogAdapter.apply { items = products }
         })
 
-        binding.productCloseButton.setOnClickListener {
-            activity?.finish()
-        }
+        setupProductsRecyclerview()
+
+//        binding.productCloseButton.setOnClickListener {
+//            activity?.finish()
+//        }
     }
 
     private fun setupProductsRecyclerview() {
-        recyclerView = binding.productsRecyclerview
+        recyclerView = binding.catalogRecyclerview
         val gridLayoutManager = GridLayoutManager(activity, gridRowCount)
         recyclerView.layoutManager = gridLayoutManager
         catalogAdapter = CatalogAdapter()
@@ -66,5 +68,9 @@ class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview) {
                 }
             }
         }
+    }
+
+    override fun onClick() {
+        Log.d("products", "click!")
     }
 }

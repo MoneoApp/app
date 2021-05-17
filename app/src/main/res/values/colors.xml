@@ -5,4 +5,5 @@
     <color name="white">#ffffffff</color>
     <color name="night">#ff121212</color>
     <color name="background_gray">#efefef</color>
+    <color name="background_dark_gray">#454545</color>
 </resources>

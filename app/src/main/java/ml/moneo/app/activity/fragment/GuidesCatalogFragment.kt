@@ -11,6 +11,7 @@ import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
 import ml.moneo.app.activity.ManualActivity
 import ml.moneo.app.databinding.FragmentGuideOverviewBinding
+import ml.moneo.app.databinding.FragmentProductOverviewBinding
 import ml.moneo.app.model.Guide
 import ml.moneo.app.model.Remote
 import ml.moneo.app.util.openActivity
@@ -18,9 +19,9 @@ import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.GuidesViewModel
 import ml.moneo.app.viewmodel.ProductsViewModel
 
-class GuidesCatalogFragment : Fragment(R.layout.fragment_guide_overview) {
+class GuidesCatalogFragment : Fragment(R.layout.fragment_product_overview) {
 
-    private lateinit var binding: FragmentGuideOverviewBinding
+    private lateinit var binding: FragmentProductOverviewBinding
     private lateinit var guidesViewModel: GuidesViewModel
     private lateinit var productsViewModel: ProductsViewModel
 
@@ -34,23 +35,23 @@ class GuidesCatalogFragment : Fragment(R.layout.fragment_guide_overview) {
 
         guidesViewModel = ViewModelProvider(this).get(GuidesViewModel::class.java)
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
-        binding = FragmentGuideOverviewBinding.bind(view)
+        binding = FragmentProductOverviewBinding.bind(view)
 
-        guidesViewModel.getSelectedGuide()?.observe(viewLifecycleOwner, {
-            if (it != null) {
-                binding.startGuideButton.visibility = View.VISIBLE
-            } else {
-                binding.startGuideButton.visibility = View.INVISIBLE
-            }
-        })
-
-        binding.guideCloseButton.setOnClickListener {
-            (activity as CatalogsOverviewActivity?)?.showProductsCatalog()
-        }
-
-        binding.startGuideButton.setOnClickListener {
-            openActivity(requireActivity(), ManualActivity::class.java, false)
-        }
+//        guidesViewModel.getSelectedGuide().observe(viewLifecycleOwner, {
+//            if (it != null) {
+//                binding.startGuideButton.visibility = View.VISIBLE
+//            } else {
+//                binding.startGuideButton.visibility = View.INVISIBLE
+//            }
+//        })
+//
+//        binding.guideCloseButton.setOnClickListener {
+//            (activity as CatalogsOverviewActivity?)?.showProductsCatalog()
+//        }
+//
+//        binding.startGuideButton.setOnClickListener {
+//            openActivity(requireActivity(), ManualActivity::class.java, false)
+//        }
 
         setupGuidesRecyclerview()
         applyGuidesSetup()
@@ -65,7 +66,7 @@ class GuidesCatalogFragment : Fragment(R.layout.fragment_guide_overview) {
     }
 
     private fun setupGuidesRecyclerview() {
-        recyclerView = binding.guidesRecyclerview
+        recyclerView = binding.catalogRecyclerview
         val gridLayoutManager = GridLayoutManager(activity?.applicationContext, gridRowCount)
         recyclerView.layoutManager = gridLayoutManager
         catalogAdapter = CatalogAdapter()
