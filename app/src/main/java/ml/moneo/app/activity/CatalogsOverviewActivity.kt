@@ -5,26 +5,29 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import ml.moneo.app.R
+import ml.moneo.app.activity.fragment.CatalogFragment
 import ml.moneo.app.activity.fragment.GuidesCatalogFragment
 import ml.moneo.app.activity.fragment.ProductsCatalogFragment
 import ml.moneo.app.databinding.ActivityCatalogsBinding
 import ml.moneo.app.viewmodel.CatalogViewModel
+import ml.moneo.app.viewmodel.GuidesViewModel
 import ml.moneo.app.viewmodel.ProductsViewModel
 
 class CatalogsOverviewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCatalogsBinding
-
     private lateinit var catalogViewModel: CatalogViewModel
+    private lateinit var guidesViewModel: GuidesViewModel
 
     private val PRODUCTS_CATALOG_FRAGMENT = "products_catalog_fragment"
     private val GUIDES_CATALOG_FRAGMENT = "guides_catalog_fragment"
+    private val LAST_VIEW_KEY = "lastView"
 
-    //private lateinit var closeClickListener: CloseClickListener
-    private lateinit var productsFrag: CloseClickListener
+    private lateinit var currentFragmentTag: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +35,10 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         supportActionBar?.hide()
         binding = ActivityCatalogsBinding.inflate(layoutInflater)
         catalogViewModel = ViewModelProvider(this).get(CatalogViewModel::class.java)
+        guidesViewModel = ViewModelProvider(this).get(GuidesViewModel::class.java)
         setContentView(binding.root)
 
-        val lastView = savedInstanceState?.getInt("lastView", 0)
-        Log.d("catalog", "creation lastview: " + lastView)
-
+        val lastView = savedInstanceState?.getInt(LAST_VIEW_KEY, 0)
         if (lastView != null) {
             if (lastView == 1) {
                 showGuidesCatalog()
@@ -45,20 +47,25 @@ class CatalogsOverviewActivity : AppCompatActivity() {
             showProductsCatalog()
         }
 
-        catalogViewModel.getCurrentView().observe(this, {
-            //Log.d("catalog", "current view $it")
+        binding.catalogCloseButton.setOnClickListener {
+            val frag =
+                supportFragmentManager.findFragmentByTag(currentFragmentTag) as CatalogFragment
+            frag.onCloseClick()
+        }
+
+        guidesViewModel.getSelectedGuide().observe(this, {
+            if (it != null) {
+                binding.startGuideButton.visibility = View.VISIBLE
+            } else {
+                binding.startGuideButton.visibility = View.INVISIBLE
+            }
         })
-
-
-        //CloseClickListener = CloseClickListener()
-        binding.catalogCloseButton.setOnClickListener { showProductsCatalog() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         val lastView = catalogViewModel.getCurrentView().value
-        Log.d("catalog", "saved lastview: $lastView")
         if (lastView != null) {
-            outState.putInt("lastView", lastView)
+            outState.putInt(LAST_VIEW_KEY, lastView)
         }
         super.onSaveInstanceState(outState)
     }
@@ -84,6 +91,8 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .hide(supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT)!!)
                         .commit();
                 }
+
+                currentFragmentTag = PRODUCTS_CATALOG_FRAGMENT
             }
 
             GUIDES_CATALOG_FRAGMENT -> {
@@ -105,6 +114,8 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .hide(supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT)!!)
                         .commit();
                 }
+
+                currentFragmentTag = GUIDES_CATALOG_FRAGMENT
             }
         }
     }
@@ -117,9 +128,5 @@ class CatalogsOverviewActivity : AppCompatActivity() {
     fun showGuidesCatalog() {
         showFragment(GUIDES_CATALOG_FRAGMENT)
         catalogViewModel.setCurrentView(CatalogViewModel.CATALOGTYPES.GUIDES)
-    }
-
-    interface CloseClickListener {
-        fun onClick();
     }
 }

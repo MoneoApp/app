@@ -3,7 +3,7 @@ package ml.moneo.app.activity.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +14,7 @@ import ml.moneo.app.model.Remote
 import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.ProductsViewModel
 
-class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview),
-    CatalogsOverviewActivity.CloseClickListener {
+class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_product_overview){
 
     private lateinit var binding: FragmentProductOverviewBinding
     private lateinit var productsViewModel: ProductsViewModel
@@ -31,25 +30,20 @@ class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview),
         binding = FragmentProductOverviewBinding.bind(view)
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
 
-        //TODO: Get search string from previous activity
-//        intent.getStringExtra("PRODUCT_NAME")?.let {
-//            productsViewModel.searchProducts(it)
-//        }
+        setupProductsRecyclerview()
 
         productsViewModel.getSearchString().observe(viewLifecycleOwner, {
             binding.catalogInput.editText?.setText(it)
         })
 
         productsViewModel.getAllProductsBySearch().observe(requireActivity(), { products ->
-            //setupProductsRecyclerview()
             catalogAdapter.apply { items = products }
         })
+    }
 
-        setupProductsRecyclerview()
-
-//        binding.productCloseButton.setOnClickListener {
-//            activity?.finish()
-//        }
+    override fun onCloseClick() {
+        super.onCloseClick()
+        activity?.finish()
     }
 
     private fun setupProductsRecyclerview() {
@@ -68,9 +62,5 @@ class ProductsCatalogFragment : Fragment(R.layout.fragment_product_overview),
                 }
             }
         }
-    }
-
-    override fun onClick() {
-        Log.d("products", "click!")
     }
 }
