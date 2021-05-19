@@ -1,6 +1,0 @@
-query Device($id:ID!) {
-  device(id:$id){
-    model
-    brand
-  }
-}

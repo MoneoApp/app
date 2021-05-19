@@ -30,6 +30,8 @@ class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_product_overvi
         binding = FragmentProductOverviewBinding.bind(view)
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
 
+        arguments?.let { productsViewModel.getProducts(it.getString("PRODUCT_ID", "")) }
+
         setupProductsRecyclerview()
 
         productsViewModel.getSearchString().observe(viewLifecycleOwner, {

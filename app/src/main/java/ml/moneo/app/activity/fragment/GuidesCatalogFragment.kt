@@ -38,6 +38,8 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_product_overview
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
         binding = FragmentProductOverviewBinding.bind(view)
 
+        productsViewModel.getSelectedProduct().value?.let { guidesViewModel.getGuides(it.remoteId) }
+
         setupGuidesRecyclerview()
         applyGuidesSetup()
     }
@@ -46,7 +48,6 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_product_overview
         super.onHiddenChanged(hidden)
         if (!hidden) {
             guidesViewModel.resetSelectedGuide()
-            applyGuidesSetup()
         }
     }
 
@@ -76,12 +77,10 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_product_overview
     }
 
     private fun applyGuidesSetup() {
-        catalogAdapter.apply {
-            items = productsViewModel.getSelectedProduct().value?.let {
-                guidesViewModel.getGuidesByRemoteId(
-                    it.remoteId
-                )
-            }!!
-        }
+        guidesViewModel.getAvailableGuides().observe(viewLifecycleOwner,{
+            catalogAdapter.apply {
+                items = it
+            }
+        })
     }
 }

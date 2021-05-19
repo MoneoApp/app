@@ -27,7 +27,6 @@ import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceQuery
 import ml.moneo.app.activity.MainActivity
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.theme.Yellow

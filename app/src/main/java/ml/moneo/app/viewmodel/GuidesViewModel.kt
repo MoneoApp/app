@@ -4,19 +4,24 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.exception.ApolloException
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import ml.moneo.DeviceByIdQuery
+import ml.moneo.DeviceManualsByDeviceIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.model.Guide
 import ml.moneo.app.model.Remote
+import ml.moneo.app.util.apolloClient
 
 class GuidesViewModel : ViewModel() {
-    private val availableGuides = MutableLiveData<List<Guide>>().apply {
-        value = getGuides()
-    }
+    private val availableGuides = MutableLiveData<List<Guide>>()
 
     private var selectedGuide = MutableLiveData<Guide?>()
 
-    fun getGuidesByRemoteId(remoteId: Int): List<Guide>? {
-        return availableGuides.value?.filter { it.remoteId == remoteId }
+    fun getAvailableGuides(): LiveData<List<Guide>> {
+        return availableGuides
     }
 
     fun getSelectedGuide(): MutableLiveData<Guide?> {
@@ -25,7 +30,7 @@ class GuidesViewModel : ViewModel() {
         return selectedGuide
     }
 
-    fun setSelectedGuide(guideId: Int) {
+    fun setSelectedGuide(guideId: String) {
         selectedGuide.value = availableGuides.value?.find { it.guideId == guideId }
     }
 
@@ -33,15 +38,27 @@ class GuidesViewModel : ViewModel() {
         selectedGuide.value = null
     }
 
-    private fun getGuides(): List<Guide> {
-        return listOf(
-            Guide("Aflevering kijken", 1, 1, R.drawable.default_guide),
-            Guide("Ander kanaal", 2, 1, R.drawable.default_guide),
-            Guide("Televisie uitzetten", 3, 1, R.drawable.default_guide),
+    fun getGuides(deviceId: String) {
+        val client = apolloClient()
 
-            Guide("Instellingen scherm openen", 4, 2, R.drawable.default_guide),
-            Guide("Ander kanaal", 5, 2, R.drawable.default_guide),
-            Guide("Televisie uitzetten", 6, 2, R.drawable.default_guide),
-        )
+        GlobalScope.launch {
+            val response = try {
+                client.query(DeviceManualsByDeviceIdQuery(deviceId)).await()
+            } catch (e: ApolloException) {
+                return@launch
+            }
+
+            val device = response.data?.device
+            if (device == null || response.hasErrors()) {
+                println(response.errors?.firstOrNull()?.message);
+
+                return@launch
+            }
+
+            var tempList: MutableList<Guide> = mutableListOf()
+            device.manuals.forEach{ tempList.add(Guide(it.title, it.id, deviceId, R.drawable.default_guide)) }
+
+            availableGuides.postValue(tempList)
+        }
     }
 }

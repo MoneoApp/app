@@ -40,6 +40,7 @@ class CatalogsOverviewActivity : AppCompatActivity() {
 
         //initFragments()
 
+        //showGuidesCatalog()
         val lastView = savedInstanceState?.getInt(LAST_VIEW_KEY, 0)
         if (lastView != null) {
             if (lastView == 1) {
@@ -78,13 +79,22 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .show(supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT)!!)
                         .commit();
                 } else {
+                    var fragment = ProductsCatalogFragment()
+                    var bundle = Bundle()
+                    bundle.putString("PRODUCT_ID", intent.getStringExtra("PRODUCT_ID"))
+                    bundle.putString("PRODUCT_NAME", intent.getStringExtra("PRODUCT_NAME"))
+
+                    fragment.arguments = bundle
+
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.catalog_fragment_container,
-                            ProductsCatalogFragment(),
+                            fragment,
                             PRODUCTS_CATALOG_FRAGMENT
                         )
                         .commit();
+
+
                 }
                 if (supportFragmentManager.findFragmentByTag(GUIDES_CATALOG_FRAGMENT) != null) {
                     supportFragmentManager.beginTransaction()

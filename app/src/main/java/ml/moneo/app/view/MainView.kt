@@ -27,7 +27,7 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceQuery
+import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.activity.ManualActivity
 import ml.moneo.app.util.apolloClient
@@ -40,6 +40,7 @@ import java.io.IOException
 fun WelcomeView() {
     var open by remember { mutableStateOf(false) }
     var label by remember { mutableStateOf<String?>(null) }
+    var id by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val labels = remember {
         try {
@@ -69,6 +70,7 @@ fun WelcomeView() {
                         open = false
                         val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
                             putExtra("PRODUCT_NAME", label)
+                            putExtra("PRODUCT_ID", id)
                         }
                         startActivity(context, intent, null)
                     }) {
@@ -96,7 +98,7 @@ fun WelcomeView() {
 
             GlobalScope.launch {
                 val response = try {
-                    client.query(DeviceQuery(first)).await()
+                    client.query(DeviceByIdQuery(first)).await()
                 } catch (e: ApolloException) {
                     return@launch
                 }
@@ -110,7 +112,8 @@ fun WelcomeView() {
 
                 Log.d("Loggie", "${device.brand} ${device.model}")
 
-                label = "${device.model}"
+                id = first
+                label = device.model
             }
         }
     }) {
