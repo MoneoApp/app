@@ -1,7 +1,0 @@
-query GetDevices {
-  devices {
-    id
-    model
-    brand
-  }
-}
