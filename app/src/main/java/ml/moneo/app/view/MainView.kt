@@ -1,5 +1,6 @@
 package ml.moneo.app.view
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,12 +19,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.exception.ApolloException
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ml.moneo.DeviceQuery
 import ml.moneo.app.R
 import ml.moneo.app.activity.ManualActivity
+import ml.moneo.app.util.apolloClient
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
@@ -77,7 +82,27 @@ fun WelcomeView() {
         val first = labels[result.first().index]
 
         if (label != first) {
-            label = first
+
+            val client = apolloClient()
+
+            GlobalScope.launch {
+                val response = try {
+                    client.query(DeviceQuery(first)).await()
+                } catch (e: ApolloException) {
+                    return@launch
+                }
+
+                val device = response.data?.device
+                if (device == null || response.hasErrors()) {
+                    println(response.errors?.firstOrNull()?.message);
+
+                    return@launch
+                }
+
+                Log.d("Loggie", "${device.brand} ${device.model}")
+
+                label = "${device.model}"
+            }
         }
     }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
