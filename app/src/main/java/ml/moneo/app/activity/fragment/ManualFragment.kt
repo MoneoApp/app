@@ -64,6 +64,10 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             }
         }
 
+        binding.includedSteps.stepsCloseButton.setOnClickListener{
+            activity?.finish()
+        }
+
         fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
         fragment.arSceneView.scene.addOnUpdateListener(this)
 
