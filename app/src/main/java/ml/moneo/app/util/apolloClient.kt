@@ -22,7 +22,6 @@ fun apolloClient(): ApolloClient {
         .serverUrl("https://staging.moneo.ml/api")
         .okHttpClient(
             OkHttpClient.Builder()
-                .addInterceptor(AuthorizationInterceptor())
                 .build()
         )
         .build()
