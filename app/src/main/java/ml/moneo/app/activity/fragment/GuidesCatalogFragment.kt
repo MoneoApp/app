@@ -1,5 +1,6 @@
 package ml.moneo.app.activity.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -58,7 +59,9 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_product_overview
 
     override fun onStartClick() {
         super.onStartClick()
-        openActivity(requireActivity(), ManualActivity::class.java, false)
+        var intent = Intent(context, ManualActivity::class.java)
+        intent.putExtra("MANUAL_ID", guidesViewModel.getSelectedGuide().value?.guideId)
+        startActivity(intent)
     }
 
     private fun setupGuidesRecyclerview() {
@@ -72,6 +75,7 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_product_overview
             if (item is Guide) {
                 val guide: Guide = item
                 guidesViewModel.setSelectedGuide(guide.guideId)
+                onStartClick()
             }
         }
     }

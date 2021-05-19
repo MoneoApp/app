@@ -29,3 +29,30 @@ query DeviceManualsByDeviceId($id: ID!) {
     }
   }
 }
+
+query ManualById($id:ID!) {
+  manual(id:$id)
+  {
+    id
+    title
+    device{
+      model
+      brand
+      image
+    }
+    steps{
+      id
+      text
+      interactions{
+        id
+        type
+        x
+        y
+        width
+        height
+        title
+        description
+      }
+    }
+  }
+}
