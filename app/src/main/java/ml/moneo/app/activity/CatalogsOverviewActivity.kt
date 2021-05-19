@@ -38,6 +38,8 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         guidesViewModel = ViewModelProvider(this).get(GuidesViewModel::class.java)
         setContentView(binding.root)
 
+        //initFragments()
+
         val lastView = savedInstanceState?.getInt(LAST_VIEW_KEY, 0)
         if (lastView != null) {
             if (lastView == 1) {
@@ -48,18 +50,16 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         }
 
         binding.catalogCloseButton.setOnClickListener {
-            val frag =
-                supportFragmentManager.findFragmentByTag(currentFragmentTag) as CatalogFragment
-            frag.onCloseClick()
+            (supportFragmentManager.findFragmentByTag(currentFragmentTag) as CatalogFragment).onCloseClick()
         }
 
-        guidesViewModel.getSelectedGuide().observe(this, {
-            if (it != null) {
-                binding.startGuideButton.visibility = View.VISIBLE
-            } else {
-                binding.startGuideButton.visibility = View.INVISIBLE
-            }
-        })
+//        guidesViewModel.getSelectedGuide().observe(this, {
+//            if (it != null) {
+//                binding.startGuideButton.visibility = View.VISIBLE
+//            } else {
+//                binding.startGuideButton.visibility = View.INVISIBLE
+//            }
+//        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -118,6 +118,28 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                 currentFragmentTag = GUIDES_CATALOG_FRAGMENT
             }
         }
+    }
+
+//    private fun showFragment(catalogFragment: CatalogFragment) {
+//        if (catalogFragment is ProductsCatalogFragment) {
+//
+//        } else if (catalogFragment is GuidesCatalogFragment) {
+//
+//        }
+//    }
+
+    private fun initFragments() {
+        val container: Int = R.id.catalog_fragment_container
+
+        supportFragmentManager.beginTransaction().add(
+            container, ProductsCatalogFragment(),
+            PRODUCTS_CATALOG_FRAGMENT
+        ).commit();
+
+        supportFragmentManager.beginTransaction().add(
+            container, GuidesCatalogFragment(),
+            PRODUCTS_CATALOG_FRAGMENT
+        ).commit();
     }
 
     fun showProductsCatalog() {
