@@ -221,7 +221,7 @@ fun ContextPopup() {
     ) {
         items.forEachIndexed { _, s ->
             DropdownMenuItem(onClick = {
-                openActivity(context, s.activity, true)
+                openActivity(context, s.activity)
                 expanded = false
             }) {
                 Row {
