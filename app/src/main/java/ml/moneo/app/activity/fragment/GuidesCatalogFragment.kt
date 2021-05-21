@@ -2,7 +2,6 @@ package ml.moneo.app.activity.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,6 +46,11 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as CatalogsOverviewActivity?)?.blockUserInput(false)
+    }
+
     override fun onCloseClick() {
         super.onCloseClick()
         (activity as CatalogsOverviewActivity?)?.showProductsCatalog()
@@ -54,6 +58,9 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview
 
     override fun onStartClick() {
         super.onStartClick()
+
+        (activity as CatalogsOverviewActivity?)?.blockUserInput(true)
+
         val intent = Intent(context, ManualActivity::class.java)
         intent.putExtra("MANUAL_ID", guidesViewModel.getSelectedGuide().value?.guideId)
         startActivity(intent)
@@ -76,7 +83,7 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview
     }
 
     private fun applyGuidesSetup() {
-        guidesViewModel.getAvailableGuides().observe(viewLifecycleOwner,{
+        guidesViewModel.getAvailableGuides().observe(viewLifecycleOwner, {
             catalogAdapter.apply {
                 items = it
             }
