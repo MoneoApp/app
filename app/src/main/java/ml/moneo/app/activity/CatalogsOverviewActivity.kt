@@ -38,9 +38,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         guidesViewModel = ViewModelProvider(this).get(GuidesViewModel::class.java)
         setContentView(binding.root)
 
-        //initFragments()
-
-        //showGuidesCatalog()
         val lastView = savedInstanceState?.getInt(LAST_VIEW_KEY, 0)
         if (lastView != null) {
             if (lastView == 1) {
@@ -138,19 +135,19 @@ class CatalogsOverviewActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private fun initFragments() {
-        val container: Int = R.id.catalog_fragment_container
-
-        supportFragmentManager.beginTransaction().add(
-            container, ProductsCatalogFragment(),
-            PRODUCTS_CATALOG_FRAGMENT
-        ).commit();
-
-        supportFragmentManager.beginTransaction().add(
-            container, GuidesCatalogFragment(),
-            PRODUCTS_CATALOG_FRAGMENT
-        ).commit();
-    }
+//    private fun initFragments() {
+//        val container: Int = R.id.catalog_fragment_container
+//
+//        supportFragmentManager.beginTransaction().add(
+//            container, ProductsCatalogFragment(),
+//            PRODUCTS_CATALOG_FRAGMENT
+//        ).commit();
+//
+//        supportFragmentManager.beginTransaction().add(
+//            container, GuidesCatalogFragment(),
+//            PRODUCTS_CATALOG_FRAGMENT
+//        ).commit();
+//    }
 
     fun showProductsCatalog() {
         showFragment(PRODUCTS_CATALOG_FRAGMENT)
