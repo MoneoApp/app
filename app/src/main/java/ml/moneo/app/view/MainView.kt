@@ -1,9 +1,11 @@
 package ml.moneo.app.view
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +39,7 @@ import ml.moneo.app.activity.HelpActivity
 import ml.moneo.app.util.apolloClient
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
+import ml.moneo.app.activity.PreferenceActivity
 import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
 
@@ -185,10 +188,10 @@ fun WelcomeView() {
     }
 }
 
-sealed class ContextPopupItems(val icon: ImageVector, @StringRes val title: Int) {
-    object Settings: ContextPopupItems(Icons.Filled.Settings, R.string.context_popup_settings);
-    object Help: ContextPopupItems(Icons.Filled.Support, R.string.context_popup_help);
-    object About: ContextPopupItems(Icons.Filled.Help, R.string.context_popup_about);
+sealed class ContextPopupItems(val icon: ImageVector, @StringRes val title: Int, val activity: Class<out Activity>) {
+    object Settings: ContextPopupItems(Icons.Filled.Settings, R.string.context_popup_settings, PreferenceActivity::class.java);
+    object Help: ContextPopupItems(Icons.Filled.Support, R.string.context_popup_help, HelpActivity::class.java);
+    object About: ContextPopupItems(Icons.Filled.Help, R.string.context_popup_about, HelpActivity::class.java);
 }
 
 @Composable
@@ -218,7 +221,7 @@ fun ContextPopup() {
     ) {
         items.forEachIndexed { _, s ->
             DropdownMenuItem(onClick = {
-                openActivity(context, HelpActivity::class.java, true)
+                openActivity(context, s.activity, true)
                 expanded = false
             }) {
                 Row {
