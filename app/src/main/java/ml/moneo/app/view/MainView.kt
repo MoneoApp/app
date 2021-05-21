@@ -39,6 +39,7 @@ import ml.moneo.app.activity.HelpActivity
 import ml.moneo.app.util.apolloClient
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
+import ml.moneo.app.activity.CreditsActivity
 import ml.moneo.app.activity.PreferenceActivity
 import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
@@ -191,7 +192,7 @@ fun WelcomeView() {
 sealed class ContextPopupItems(val icon: ImageVector, @StringRes val title: Int, val activity: Class<out Activity>) {
     object Settings: ContextPopupItems(Icons.Filled.Settings, R.string.context_popup_settings, PreferenceActivity::class.java);
     object Help: ContextPopupItems(Icons.Filled.Support, R.string.context_popup_help, HelpActivity::class.java);
-    object About: ContextPopupItems(Icons.Filled.Help, R.string.context_popup_about, HelpActivity::class.java);
+    object About: ContextPopupItems(Icons.Filled.Help, R.string.context_popup_about, CreditsActivity::class.java);
 }
 
 @Composable
