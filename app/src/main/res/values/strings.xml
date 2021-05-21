@@ -10,4 +10,5 @@
     <string name="vorige">Vorige</string>
     <string name="volgende">Volgende</string>
     <string name="catalog_item">Catalog Item</string>
+    <string name="interactieve_handleiding_wordt_geladen">Interactieve handleiding wordt geladen...</string>
 </resources>
