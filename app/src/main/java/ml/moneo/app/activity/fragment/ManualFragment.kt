@@ -40,8 +40,13 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
         binding = FragmentManualBinding.inflate(inflater, container, false)
         manualViewModel = ViewModelProvider(this).get(ManualViewModel::class.java)
-        arguments?.let {
-            manualViewModel.setupManual(it.getString("MANUAL_ID", "")) }
+
+        return binding.root
+    }
+
+    fun initializeAR(manualId: String)
+    {
+        manualViewModel.setupManual(manualId)
 
         manualViewModel.getManual().observe(viewLifecycleOwner, {
             if(it != null)
@@ -79,8 +84,6 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                 fragment.arSceneView.planeRenderer.isEnabled = false;
             }
         })
-
-        return binding.root
     }
 
     fun setupDatabase(config: Config, session: Session) {
