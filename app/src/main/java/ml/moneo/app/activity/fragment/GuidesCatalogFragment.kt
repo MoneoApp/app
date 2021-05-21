@@ -12,11 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
 import ml.moneo.app.activity.ManualActivity
-import ml.moneo.app.databinding.FragmentGuideOverviewBinding
 import ml.moneo.app.databinding.FragmentProductOverviewBinding
 import ml.moneo.app.model.Guide
-import ml.moneo.app.model.Remote
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.GuidesViewModel
 import ml.moneo.app.viewmodel.ProductsViewModel

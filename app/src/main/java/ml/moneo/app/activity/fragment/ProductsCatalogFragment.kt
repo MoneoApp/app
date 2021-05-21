@@ -34,9 +34,9 @@ class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_product_overvi
 
         setupProductsRecyclerview()
 
-        productsViewModel.getSearchString().observe(viewLifecycleOwner, {
-            binding.catalogInput.editText?.setText(it)
-        })
+//        productsViewModel.getSearchString().observe(viewLifecycleOwner, {
+//            binding.catalogInput.editText?.setText(it)
+//        })
 
         productsViewModel.getAllProductsBySearch().observe(requireActivity(), { products ->
             catalogAdapter.apply { items = products }

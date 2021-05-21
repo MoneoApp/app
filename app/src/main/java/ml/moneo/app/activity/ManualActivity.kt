@@ -14,7 +14,7 @@ class ManualActivity : AppCompatActivity(R.layout.activity_main)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.included_manual) as ManualFragment
+        val fragment = supportFragmentManager.findFragmentById(R.id.included_manual) as ManualFragment
         intent.getStringExtra("MANUAL_ID")?.let { fragment.initializeAR(it) }
 
         //ALTERNATIVE
