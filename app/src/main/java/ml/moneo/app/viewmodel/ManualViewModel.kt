@@ -31,14 +31,20 @@ class ManualViewModel : ViewModel() {
         return currentStep.value?.let { manual.value!!.steps[it].description }!!
     }
 
-    fun getButtonPosition(): Vector3 {
-        return currentStep.value?.let {
-            Vector3(
-                manual.value!!.steps[it].interaction.x.toFloat(),
-                0.0f,
-                manual.value!!.steps[it].interaction.y.toFloat()
+    fun getButtonPosition(): List<Vector3> {
+        var positions = mutableListOf<Vector3>()
+
+        manual.value!!.steps[currentStep.value!!].interaction.forEach {
+            positions.add(
+                Vector3(
+                    it.x.toFloat(),
+                    0.0f,
+                    it.y.toFloat()
+                )
             )
-        }!!
+        }
+
+        return positions
     }
 
     fun next() {
@@ -80,20 +86,28 @@ class ManualViewModel : ViewModel() {
             }
 
             var steps = mutableListOf<Step>()
-            tManual.steps.forEach{
-                steps.add(Step(
-                    it.id,
-                    it.text,
-                    Interaction(
-                        it.interactions[0].id,
-                        it.interactions[0].x,
-                        it.interactions[0].y,
-                        it.interactions[0].width,
-                        it.interactions[0].height,
-                        it.interactions[0].title,
+            tManual.steps.forEach{ step ->
+
+                var interactions = mutableListOf<Interaction>()
+
+                step.interactions.forEach{ interaction ->
+
+                    interactions.add(Interaction(
+                        interaction.id,
+                        interaction.x,
+                        interaction.y,
+                        interaction.width,
+                        interaction.height,
+                        interaction.title,
                         Overlay("0", "overlay0", listOf()),
                         listOf()
-                    )
+                    ))
+                }
+
+                steps.add(Step(
+                    step.id,
+                    step.text,
+                    interactions
                 ))
             }
 

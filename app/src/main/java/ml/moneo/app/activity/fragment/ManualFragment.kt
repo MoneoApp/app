@@ -87,7 +87,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
     }
 
     fun setupDatabase(config: Config, session: Session) {
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.white_remote)
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.white_remote_square)
         val db = AugmentedImageDatabase(session)
 
         db.addImage("image", bitmap)
@@ -118,34 +118,38 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             fragment.planeDiscoveryController.hide()
         }
 
-        ViewRenderable.builder()
-            .setView(fragment.context, R.layout.button)
-            .build()
-            .thenAccept { renderable ->
-                renderable.isShadowCaster = false
-                renderable.isShadowReceiver = false
+        val anchorNode = AnchorNode(anchor)
+        currentNode = anchorNode
 
-                val anchorNode = AnchorNode(anchor)
-                val node = TransformableNode(this.fragment.transformationSystem)
+        manualViewModel.getButtonPosition().forEach { buttonPos ->
+            ViewRenderable.builder()
+                .setView(fragment.context, R.layout.button)
+                .build()
+                .thenAccept { renderable ->
+                    renderable.isShadowCaster = false
+                    renderable.isShadowReceiver = false
 
-                node.renderable = renderable
-                node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                node.localPosition = manualViewModel.getButtonPosition()
-                node.setParent(anchorNode)
+                    val node = TransformableNode(this.fragment.transformationSystem)
 
-                currentNode = anchorNode
-                this.fragment.arSceneView.scene.addChild(anchorNode)
-            }
-            .exceptionally { error ->
-                activity?.let {
-                    AlertDialog.Builder(it)
-                        .setMessage(error.message)
-                        .setTitle("Error")
-                        .create()
-                        .show()
+                    node.renderable = renderable
+                    node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
+                    node.localPosition = buttonPos
+                    node.localScale = Vector3(1.0f, 1.0f, 1.0f)
+                    node.setParent(anchorNode)
                 }
+                .exceptionally { error ->
+                    activity?.let {
+                        AlertDialog.Builder(it)
+                            .setMessage(error.message)
+                            .setTitle("Error")
+                            .create()
+                            .show()
+                    }
 
-                return@exceptionally null
-            }
+                    return@exceptionally null
+                }
+        }
+
+        this.fragment.arSceneView.scene.addChild(anchorNode)
     }
 }
