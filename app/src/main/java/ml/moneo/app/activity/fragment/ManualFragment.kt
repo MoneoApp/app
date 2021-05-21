@@ -41,39 +41,53 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         binding = FragmentManualBinding.inflate(inflater, container, false)
         manualViewModel = ViewModelProvider(this).get(ManualViewModel::class.java)
 
-        manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
-            binding.includedSteps.manualTextview.text =
-                getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
-        })
-
-        binding.includedSteps.nextButton.setOnClickListener {
-            manualViewModel.next()
-
-            if(active)
-            {
-                showLayout(this.anchor!!)
-            }
-        }
-
-        binding.includedSteps.previousButton.setOnClickListener {
-            manualViewModel.previous()
-
-            if(active)
-            {
-                showLayout(this.anchor!!)
-            }
-        }
-
-        fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
-        fragment.arSceneView.scene.addOnUpdateListener(this)
-
-        fragment.arSceneView.planeRenderer.isEnabled = false;
-
         return binding.root
     }
 
+    fun initializeAR(manualId: String)
+    {
+        manualViewModel.setupManual(manualId)
+
+        manualViewModel.getManual().observe(viewLifecycleOwner, {
+            if(it != null)
+            {
+                manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
+                    binding.includedSteps.manualTextview.text =
+                        getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
+                })
+
+                binding.includedSteps.nextButton.setOnClickListener {
+                    manualViewModel.next()
+
+                    if(active)
+                    {
+                        showLayout(this.anchor!!)
+                    }
+                }
+
+                binding.includedSteps.previousButton.setOnClickListener {
+                    manualViewModel.previous()
+
+                    if(active)
+                    {
+                        showLayout(this.anchor!!)
+                    }
+                }
+
+                binding.includedSteps.stepsCloseButton.setOnClickListener{
+                    activity?.finish()
+                }
+
+                fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
+                fragment.arSceneView.scene.addOnUpdateListener(this)
+
+                fragment.arSceneView.planeRenderer.isEnabled = false;
+            }
+        })
+    }
+
     fun setupDatabase(config: Config, session: Session) {
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.white_remote)
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.white_remote_square)
         val db = AugmentedImageDatabase(session)
 
         db.addImage("image", bitmap)
@@ -104,34 +118,38 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             fragment.planeDiscoveryController.hide()
         }
 
-        ViewRenderable.builder()
-            .setView(fragment.context, R.layout.button)
-            .build()
-            .thenAccept { renderable ->
-                renderable.isShadowCaster = false
-                renderable.isShadowReceiver = false
+        val anchorNode = AnchorNode(anchor)
+        currentNode = anchorNode
 
-                val anchorNode = AnchorNode(anchor)
-                val node = TransformableNode(this.fragment.transformationSystem)
+        manualViewModel.getInteractions().forEach { interaction ->
+            ViewRenderable.builder()
+                .setView(fragment.context, R.layout.button)
+                .build()
+                .thenAccept { renderable ->
+                    renderable.isShadowCaster = false
+                    renderable.isShadowReceiver = false
 
-                node.renderable = renderable
-                node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                node.localPosition = manualViewModel.getButtonPosition()
-                node.setParent(anchorNode)
+                    val node = TransformableNode(this.fragment.transformationSystem)
 
-                currentNode = anchorNode
-                this.fragment.arSceneView.scene.addChild(anchorNode)
-            }
-            .exceptionally { error ->
-                activity?.let {
-                    AlertDialog.Builder(it)
-                        .setMessage(error.message)
-                        .setTitle("Error")
-                        .create()
-                        .show()
+                    node.renderable = renderable
+                    node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
+                    node.localPosition = Vector3(interaction.x.toFloat(), 0.0f, interaction.y.toFloat())
+                    //node.localScale = Vector3(interaction.width.toFloat(), 1.0f, interaction.height.toFloat())
+                    node.setParent(anchorNode)
                 }
+                .exceptionally { error ->
+                    activity?.let {
+                        AlertDialog.Builder(it)
+                            .setMessage(error.message)
+                            .setTitle("Error")
+                            .create()
+                            .show()
+                    }
 
-                return@exceptionally null
-            }
+                    return@exceptionally null
+                }
+        }
+
+        this.fragment.arSceneView.scene.addChild(anchorNode)
     }
 }

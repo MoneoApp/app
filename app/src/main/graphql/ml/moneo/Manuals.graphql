@@ -1,0 +1,58 @@
+query DeviceById($id:ID!) {
+  device(id:$id){
+    id
+    model
+    brand
+    image
+  }
+}
+
+query DeviceByModel($search: String) {
+  devices(search: $search) {
+    id
+    model
+    brand
+    image
+  }
+}
+
+
+query DeviceManualsByDeviceId($id: ID!) {
+  device(id: $id) {
+    id
+    model
+    brand
+    image
+    manuals {
+      id
+      title
+    }
+  }
+}
+
+query ManualById($id:ID!) {
+  manual(id:$id)
+  {
+    id
+    title
+    device{
+      model
+      brand
+      image
+    }
+    steps{
+      id
+      text
+      interactions{
+        id
+        type
+        x
+        y
+        width
+        height
+        title
+        description
+      }
+    }
+  }
+}

@@ -17,7 +17,7 @@ class Manual(
 data class Step(
     val id: String,
     val description: String,
-    val interaction: Interaction
+    val interaction: List<Interaction>
 )
 
 data class Overlay(
@@ -28,10 +28,10 @@ data class Overlay(
 
 data class Interaction(
     val id: String,
-    val x: Float,
-    val y: Float,
-    val width: Float,
-    val height: Float,
+    val x: Double,
+    val y: Double,
+    val width: Double,
+    val height: Double,
     val text: String,
     val overlay: Overlay,
 //    val overlayId: String,

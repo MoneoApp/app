@@ -1,6 +1,7 @@
 package ml.moneo.app.view
 
 import android.Manifest
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,10 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.exception.ApolloException
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import ml.moneo.app.activity.MainActivity
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.theme.Yellow
 import ml.moneo.app.R
+import ml.moneo.app.util.apolloClient
 
 @Composable
 fun OnboardingView() {
