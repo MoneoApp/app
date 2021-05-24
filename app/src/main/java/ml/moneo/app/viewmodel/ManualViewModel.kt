@@ -98,9 +98,12 @@ class ManualViewModel : ViewModel() {
                 steps.add(Step(
                     step.id,
                     step.text,
+                    step.order,
                     interactions
                 ))
             }
+
+            steps.sortBy { it.order }
 
             manual.postValue(Manual(
                 id = tManual.id,

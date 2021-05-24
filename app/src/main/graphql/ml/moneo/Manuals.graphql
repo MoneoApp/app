@@ -43,6 +43,7 @@ query ManualById($id:ID!) {
     steps{
       id
       text
+      order
       interactions{
         id
         type
