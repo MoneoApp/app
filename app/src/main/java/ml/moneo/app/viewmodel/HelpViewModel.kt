@@ -8,7 +8,7 @@ import ml.moneo.app.model.*
 
 class HelpViewModel : ViewModel() {
 
-    private val manual = createTestManual();
+    private val manual = createHelpManual();
     private val currentStep = MutableLiveData(0)
 
     fun getCurrentStep(): LiveData<Int> {
@@ -43,20 +43,35 @@ class HelpViewModel : ViewModel() {
         };
     }
 
-    private fun createTestManual(): HelpManual {
+    private fun createHelpManual(): HelpManual {
         return HelpManual(
             id = "0",
             name = "Test manual",
             steps = listOf(
                 HelpStep(
                     "0",
-                    "Pak een item waar u uitleg over wil krijgen",
-                    R.drawable.white_remote
+                    "Op het eerste scherm kunt u een apparaat scannen door deze in beeld te houden.",
+                    R.drawable.help_step_1
                 ),
                 HelpStep(
                     "1",
-                    "Richt uw camera naar het item tot er een pop-up up het scherm komt te staan",
-                    R.drawable.default_remote
+                    "Zodra het apparaat herkend wordt komt er een pop-up. Klik op 'Manual' als het gescande apparaat correct is.",
+                    R.drawable.help_step_2
+                ),
+                HelpStep(
+                    "2",
+                    "Selecteer hierna het juiste modelnummer van uw apparaat.",
+                    R.drawable.help_step_3
+                ),
+                HelpStep(
+                    "3",
+                    "Selecteer nu een van de handleidingen.",
+                    R.drawable.help_step_4
+                ),
+                HelpStep(
+                    "4",
+                    "Volg nu de handleiding. Bij sommige stappen worden bijbehorende knoppen in groen opgelicht.",
+                    R.drawable.help_step_5
                 )
             )
         )

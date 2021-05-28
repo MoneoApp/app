@@ -119,96 +119,96 @@ class ManualViewModel : ViewModel() {
         }
     }
 
-//    private fun createTestManual(): Manual {
-//        return Manual(
-//            id = "0",
-//            name = "Test manual",
-//            steps = listOf(
-//                Step(
-//                    "0",
-//                    "Zet de afstandbediening aan.",
-//                    Interaction(
-//                        "0",
-//                        0.006f,
-//                        0f,
-//                        10f,
-//                        10f,
-//                        "TestButton0",
-//                        Overlay("0", "overlay0", listOf()),
-//                        listOf()
-//                    )
-//                ),
-//                Step(
-//                    "1",
-//                    "Druk op de 'Coole knop' die aangegeven is in het rood.",
-//                    Interaction(
-//                        "1",
-//                        -.006f,
-//                        .0f,
-//                        10f,
-//                        10f,
-//                        "TestButton1",
-//                        Overlay("1", "overlay1", listOf()),
-//                        listOf()
-//                    )
-//                ),
-//                Step(
-//                    "2",
-//                    "Druk nu op de 'Nog coolere knop' die ook aangegeven is in het rood",
-//                    Interaction(
-//                        "2",
-//                        -.018f,
-//                        .0f,
-//                        10f,
-//                        10f,
-//                        "TestButton2",
-//                        Overlay("2", "overlay2", listOf()),
-//                        listOf()
-//                    )
-//                ),
-//                Step(
-//                    "3",
-//                    "Zet nu de afstandsbediening uit door de uitknop in te drukken.",
-//                    Interaction(
-//                        "3",
-//                        .006f,
-//                        .0f,
-//                        10f,
-//                        10f,
-//                        "TestButton3",
-//                        Overlay("3", "overlay3", listOf()),
-//                        listOf()
-//                    )
-//                ),
-//                Step(
-//                    "4",
-//                    "Bedenk dat die laatste stap eigenlijk niet zo slim was, en zet de afstandsbediening toch maar weer aan door de aanknop in te drukken.",
-//                    Interaction(
-//                        "4",
-//                        -.006f,
-//                        .0f,
-//                        10f,
-//                        10f,
-//                        "TestButton4",
-//                        Overlay("4", "overlay4", listOf()),
-//                        listOf()
-//                    )
-//                ),
-//                Step(
-//                    "5",
-//                    "Gefeliciteerd. Je hebt zojuist de afstandsbediening(Dus niet de televisie zelf) aan, daarna uit en tot slot weer aan gezet. Dat heb je heel goed gedaan.",
-//                    Interaction(
-//                        "5",
-//                        -.018f,
-//                        .0f,
-//                        10f,
-//                        10f,
-//                        "TestButton5",
-//                        Overlay("5", "overlay5", listOf()),
-//                        listOf()
-//                    )
-//                )
-//            )
-//        )
-//    }
+    /*private fun createTestManual(): Manual {
+        return Manual(
+            id = "0",
+            name = "Test manual",
+            steps = listOf(
+                Step(
+                    "0",
+                    "Zet de afstandbediening aan.",
+                    Interaction(
+                        "0",
+                        0.006,
+                        0.0,
+                        10.0,
+                        10.0,
+                        "TestButton0",
+                        Overlay("0", "overlay0", listOf()),
+                        listOf()
+                    )
+                ),
+                Step(
+                    "1",
+                    "Druk op de 'Coole knop' die aangegeven is in het rood.",
+                    Interaction(
+                        "1",
+                        -.006,
+                        .0,
+                        10.0,
+                        10.0,
+                        "TestButton1",
+                        Overlay("1", "overlay1", listOf()),
+                        listOf()
+                    )
+                ),
+                Step(
+                    "2",
+                    "Druk nu op de 'Nog coolere knop' die ook aangegeven is in het rood",
+                    Interaction(
+                        "2",
+                        -.018,
+                        .0,
+                        10.0,
+                        10.0,
+                        "TestButton2",
+                        Overlay("2", "overlay2", listOf()),
+                        listOf()
+                    )
+                ),
+                Step(
+                    "3",
+                    "Zet nu de afstandsbediening uit door de uitknop in te drukken.",
+                    Interaction(
+                        "3",
+                        .006,
+                        .0,
+                        10.0,
+                        10.0,
+                        "TestButton3",
+                        Overlay("3", "overlay3", listOf()),
+                        listOf()
+                    )
+                ),
+                Step(
+                    "4",
+                    "Bedenk dat die laatste stap eigenlijk niet zo slim was, en zet de afstandsbediening toch maar weer aan door de aanknop in te drukken.",
+                    Interaction(
+                        "4",
+                        -.006,
+                        .0,
+                        10.0,
+                        10.0,
+                        "TestButton4",
+                        Overlay("4", "overlay4", listOf()),
+                        listOf()
+                    )
+                ),
+                Step(
+                    "5",
+                    "Gefeliciteerd. Je hebt zojuist de afstandsbediening(Dus niet de televisie zelf) aan, daarna uit en tot slot weer aan gezet. Dat heb je heel goed gedaan.",
+                    Interaction(
+                        "5",
+                        -.018,
+                        .0,
+                        10.0,
+                        10.0,
+                        "TestButton5",
+                        Overlay("5", "overlay5", listOf()),
+                        listOf()
+                    )
+                )
+            )
+        )
+    }*/
 }

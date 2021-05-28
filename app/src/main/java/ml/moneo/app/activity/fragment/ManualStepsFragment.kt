@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ml.moneo.app.R
-import ml.moneo.app.databinding.HelpBinding
+import ml.moneo.app.databinding.FragmentHelpBinding
 import ml.moneo.app.viewmodel.HelpViewModel
 
 class ManualStepsFragment : Fragment() {
     private lateinit var helpViewModel: HelpViewModel
-    private lateinit var binding: HelpBinding
+    private lateinit var binding: FragmentHelpBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,7 +21,7 @@ class ManualStepsFragment : Fragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        binding = HelpBinding.inflate(inflater, container, false)
+        binding = FragmentHelpBinding.inflate(inflater, container, false)
         helpViewModel = ViewModelProvider(this).get(HelpViewModel::class.java)
 
         helpViewModel.getCurrentStep().observe(viewLifecycleOwner, {
