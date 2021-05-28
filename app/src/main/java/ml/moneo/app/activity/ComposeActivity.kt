@@ -9,7 +9,7 @@ import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import ml.moneo.app.R
 import ml.moneo.app.view.theme.Theme
 
-abstract class ComposeActivity(private val content: @Composable () -> Unit) : ComponentActivity() {
+abstract class ComposeActivity : ComponentActivity() {
     override fun onCreate(bundle: Bundle?) {
         setTheme(R.style.Theme_Moneo)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -19,9 +19,12 @@ abstract class ComposeActivity(private val content: @Composable () -> Unit) : Co
         setContent {
             ProvideWindowInsets {
                 Theme {
-                    content()
+                    getContent()
                 }
             }
         }
     }
+
+    @Composable
+    abstract fun getContent()
 }
