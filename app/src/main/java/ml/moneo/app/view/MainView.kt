@@ -1,7 +1,7 @@
 package ml.moneo.app.view
 
-import android.util.Log
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,11 +29,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
-import ml.moneo.app.activity.ManualActivity
-import ml.moneo.app.util.apolloClient
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.view.component.TFCamera
+import ml.moneo.app.util.apolloClient
+import ml.moneo.app.view.component.CoolCamera
 import java.io.IOException
 
 @Composable
@@ -81,41 +79,46 @@ fun WelcomeView() {
         }
     }
 
-    TFCamera({ result ->
+    CoolCamera({ result ->
         if (open) {
-            return@TFCamera
+            return@CoolCamera
         } else if (result.isEmpty()) {
             label = null
 
-            return@TFCamera
+            return@CoolCamera
         }
 
         val first = labels[result.first().index]
 
-        if (label != first) {
-
-            val client = apolloClient()
-
-            GlobalScope.launch {
-                val response = try {
-                    client.query(DeviceByIdQuery(first)).await()
-                } catch (e: ApolloException) {
-                    return@launch
-                }
-
-                val device = response.data?.device
-                if (device == null || response.hasErrors()) {
-                    println(response.errors?.firstOrNull()?.message);
-
-                    return@launch
-                }
-
-                Log.d("Loggie", "${device.brand} ${device.model}")
-
-                id = first
-                label = device.model
-            }
+        if (label == first) {
+            return@CoolCamera
         }
+
+        val client = apolloClient()
+
+        GlobalScope.launch {
+            val response = try {
+                client.query(DeviceByIdQuery(first)).await()
+            } catch (e: ApolloException) {
+                return@launch
+            }
+
+            val device = response.data?.device
+
+            if (device == null || response.hasErrors()) {
+                println(response.errors?.firstOrNull()?.message);
+
+                return@launch
+            }
+
+            Log.d("MON/API", "${device.brand} ${device.model}")
+
+            id = first
+            label = device.model
+        }
+    }, { result ->
+        id = result
+        label = "Manual scan"
     }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
