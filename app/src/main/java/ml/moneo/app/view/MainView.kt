@@ -5,10 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
@@ -36,8 +31,6 @@ import java.io.IOException
 
 @Composable
 fun WelcomeView() {
-    var open by remember { mutableStateOf(false) }
-    var label by remember { mutableStateOf<String?>(null) }
     var id by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val labels = remember {
@@ -54,43 +47,16 @@ fun WelcomeView() {
         }
     }
 
-    if (open) {
-        Dialog({ open = false }) {
-            Surface(
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column {
-                    Text(
-                        text = label ?: "",
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Button({
-                        open = false
-                        val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
-                            putExtra("PRODUCT_NAME", label)
-                            putExtra("PRODUCT_ID", id)
-                        }
-                        startActivity(context, intent, null)
-                    }) {
-                        Text(stringResource(R.string.manual))
-                    }
-                }
-            }
-        }
-    }
-
     CoolCamera({ result ->
-        if (open) {
-            return@CoolCamera
-        } else if (result.isEmpty()) {
-            label = null
+        if (result.isEmpty()) {
+            id = null
 
             return@CoolCamera
         }
 
         val first = labels[result.first().index]
 
-        if (label == first) {
+        if (id == first) {
             return@CoolCamera
         }
 
@@ -114,12 +80,8 @@ fun WelcomeView() {
             Log.d("MON/API", "${device.brand} ${device.model}")
 
             id = first
-            label = device.model
         }
-    }, { result ->
-        id = result
-        label = "Manual scan"
-    }) {
+    }, { id = it }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
 
@@ -163,14 +125,19 @@ fun WelcomeView() {
         }
     }
 
-    DisposableEffect(label) {
-        if (label == null || label == "Background") {
+    DisposableEffect(id) {
+        if (id == null) {
             return@DisposableEffect onDispose {}
         }
 
         val job = GlobalScope.launch {
             delay(500)
-            open = true
+
+            val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
+                putExtra("PRODUCT_ID", id)
+            }
+
+            startActivity(context, intent, null)
         }
 
         onDispose {
