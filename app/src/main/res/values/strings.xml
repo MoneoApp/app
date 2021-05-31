@@ -7,6 +7,10 @@
     <string name="previous">Previous</string>
     <string name="manual_step">%1$d. %2$s</string>
     <string name="start">Start</string>
+    <string name="vorige">Vorige</string>
+    <string name="volgende">Volgende</string>
+    <string name="catalog_item">Catalog Item</string>
+    <string name="interactieve_handleiding_wordt_geladen">Interactieve handleiding wordt geladen...</string>
     <string name="context_popup_settings">Settings</string>
     <string name="context_popup_help">Help</string>
     <string name="context_popup_about">About</string>

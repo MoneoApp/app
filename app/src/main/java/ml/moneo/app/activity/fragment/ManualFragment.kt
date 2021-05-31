@@ -121,7 +121,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         val anchorNode = AnchorNode(anchor)
         currentNode = anchorNode
 
-        manualViewModel.getButtonPosition().forEach { buttonPos ->
+        manualViewModel.getInteractions().forEach { interaction ->
             ViewRenderable.builder()
                 .setView(fragment.context, R.layout.button)
                 .build()
@@ -133,8 +133,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                    node.localPosition = buttonPos
-                    node.localScale = Vector3(1.0f, 1.0f, 1.0f)
+                    node.localPosition = Vector3(interaction.x.toFloat(), 0.0f, interaction.y.toFloat())
+                    //node.localScale = Vector3(interaction.width.toFloat(), 1.0f, interaction.height.toFloat())
                     node.setParent(anchorNode)
                 }
                 .exceptionally { error ->

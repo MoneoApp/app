@@ -38,9 +38,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         guidesViewModel = ViewModelProvider(this).get(GuidesViewModel::class.java)
         setContentView(binding.root)
 
-        //initFragments()
-
-        //showGuidesCatalog()
         val lastView = savedInstanceState?.getInt(LAST_VIEW_KEY, 0)
         if (lastView != null) {
             if (lastView == 1) {
@@ -53,14 +50,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         binding.catalogCloseButton.setOnClickListener {
             (supportFragmentManager.findFragmentByTag(currentFragmentTag) as CatalogFragment).onCloseClick()
         }
-
-//        guidesViewModel.getSelectedGuide().observe(this, {
-//            if (it != null) {
-//                binding.startGuideButton.visibility = View.VISIBLE
-//            } else {
-//                binding.startGuideButton.visibility = View.INVISIBLE
-//            }
-//        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -130,28 +119,6 @@ class CatalogsOverviewActivity : AppCompatActivity() {
         }
     }
 
-//    private fun showFragment(catalogFragment: CatalogFragment) {
-//        if (catalogFragment is ProductsCatalogFragment) {
-//
-//        } else if (catalogFragment is GuidesCatalogFragment) {
-//
-//        }
-//    }
-
-    private fun initFragments() {
-        val container: Int = R.id.catalog_fragment_container
-
-        supportFragmentManager.beginTransaction().add(
-            container, ProductsCatalogFragment(),
-            PRODUCTS_CATALOG_FRAGMENT
-        ).commit();
-
-        supportFragmentManager.beginTransaction().add(
-            container, GuidesCatalogFragment(),
-            PRODUCTS_CATALOG_FRAGMENT
-        ).commit();
-    }
-
     fun showProductsCatalog() {
         showFragment(PRODUCTS_CATALOG_FRAGMENT)
         catalogViewModel.setCurrentView(CatalogViewModel.CATALOGTYPES.PRODUCTS)
@@ -160,5 +127,13 @@ class CatalogsOverviewActivity : AppCompatActivity() {
     fun showGuidesCatalog() {
         showFragment(GUIDES_CATALOG_FRAGMENT)
         catalogViewModel.setCurrentView(CatalogViewModel.CATALOGTYPES.GUIDES)
+    }
+
+    fun blockUserInput(value: Boolean) {
+        if (value) {
+            binding.catalogProgressBar.visibility = View.VISIBLE
+        } else if (!value) {
+            binding.catalogProgressBar.visibility = View.INVISIBLE
+        }
     }
 }

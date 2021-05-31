@@ -1,22 +1,20 @@
 package ml.moneo.app.activity.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.databinding.FragmentProductOverviewBinding
+import ml.moneo.app.databinding.FragmentCatalogOverviewBinding
 import ml.moneo.app.model.Remote
 import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.ProductsViewModel
 
-class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_product_overview){
+class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview){
 
-    private lateinit var binding: FragmentProductOverviewBinding
+    private lateinit var binding: FragmentCatalogOverviewBinding
     private lateinit var productsViewModel: ProductsViewModel
 
     private lateinit var recyclerView: RecyclerView
@@ -27,16 +25,12 @@ class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_product_overvi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentProductOverviewBinding.bind(view)
+        binding = FragmentCatalogOverviewBinding.bind(view)
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
 
         arguments?.let { productsViewModel.getProducts(it.getString("PRODUCT_ID", "")) }
 
         setupProductsRecyclerview()
-
-        productsViewModel.getSearchString().observe(viewLifecycleOwner, {
-            binding.catalogInput.editText?.setText(it)
-        })
 
         productsViewModel.getAllProductsBySearch().observe(requireActivity(), { products ->
             catalogAdapter.apply { items = products }
