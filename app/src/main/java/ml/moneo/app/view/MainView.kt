@@ -1,14 +1,11 @@
 package ml.moneo.app.view
 
-import android.util.Log
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
@@ -29,17 +24,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
-import ml.moneo.app.activity.ManualActivity
-import ml.moneo.app.util.apolloClient
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.view.component.TFCamera
+import ml.moneo.app.util.apolloClient
+import ml.moneo.app.view.component.CoolCamera
 import java.io.IOException
 
 @Composable
 fun WelcomeView() {
-    var open by remember { mutableStateOf(false) }
-    var label by remember { mutableStateOf<String?>(null) }
     var id by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val labels = remember {
@@ -56,67 +47,41 @@ fun WelcomeView() {
         }
     }
 
-    if (open) {
-        Dialog({ open = false }) {
-            Surface(
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column {
-                    Text(
-                        text = label ?: "",
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Button({
-                        open = false
-                        val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
-                            putExtra("PRODUCT_NAME", label)
-                            putExtra("PRODUCT_ID", id)
-                        }
-                        startActivity(context, intent, null)
-                    }) {
-                        Text(stringResource(R.string.manual))
-                    }
-                }
-            }
-        }
-    }
+    CoolCamera({ result ->
+        if (result.isEmpty()) {
+            id = null
 
-    TFCamera({ result ->
-        if (open) {
-            return@TFCamera
-        } else if (result.isEmpty()) {
-            label = null
-
-            return@TFCamera
+            return@CoolCamera
         }
 
         val first = labels[result.first().index]
 
-        if (label != first) {
-
-            val client = apolloClient()
-
-            GlobalScope.launch {
-                val response = try {
-                    client.query(DeviceByIdQuery(first)).await()
-                } catch (e: ApolloException) {
-                    return@launch
-                }
-
-                val device = response.data?.device
-                if (device == null || response.hasErrors()) {
-                    println(response.errors?.firstOrNull()?.message);
-
-                    return@launch
-                }
-
-                Log.d("Loggie", "${device.brand} ${device.model}")
-
-                id = first
-                label = device.model
-            }
+        if (id == first) {
+            return@CoolCamera
         }
-    }) {
+
+        val client = apolloClient()
+
+        GlobalScope.launch {
+            val response = try {
+                client.query(DeviceByIdQuery(first)).await()
+            } catch (e: ApolloException) {
+                return@launch
+            }
+
+            val device = response.data?.device
+
+            if (device == null || response.hasErrors()) {
+                println(response.errors?.firstOrNull()?.message);
+
+                return@launch
+            }
+
+            Log.d("MON/API", "${device.brand} ${device.model}")
+
+            id = first
+        }
+    }, { id = it }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
 
@@ -160,14 +125,19 @@ fun WelcomeView() {
         }
     }
 
-    DisposableEffect(label) {
-        if (label == null || label == "Background") {
+    DisposableEffect(id) {
+        if (id == null) {
             return@DisposableEffect onDispose {}
         }
 
         val job = GlobalScope.launch {
             delay(500)
-            open = true
+
+            val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
+                putExtra("PRODUCT_ID", id)
+            }
+
+            startActivity(context, intent, null)
         }
 
         onDispose {
