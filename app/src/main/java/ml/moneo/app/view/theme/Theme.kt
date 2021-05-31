@@ -15,9 +15,16 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun Theme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun Theme(
+    theme: String,
+    content: @Composable () -> Unit
+) {
     MaterialTheme(
-        colors = if (darkTheme) DarkColorPalette else LightColorPalette,
+        colors = when (theme) {
+            "dark" -> DarkColorPalette
+            "light" -> LightColorPalette
+            else -> if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+        },
         content = content
     )
 }

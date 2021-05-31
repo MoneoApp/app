@@ -8,9 +8,10 @@ import androidx.core.content.ContextCompat
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.WelcomeView
 
+
 class MainActivity : ComposeActivity() {
     @Composable
-    override fun getContent() {
+    override fun GetContent() {
         WelcomeView()
     }
 

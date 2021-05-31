@@ -5,7 +5,7 @@ import ml.moneo.app.view.OnboardingView
 
 class OnboardingActivity : ComposeActivity() {
     @Composable
-    override fun getContent() {
+    override fun GetContent() {
         OnboardingView()
     }
 }
