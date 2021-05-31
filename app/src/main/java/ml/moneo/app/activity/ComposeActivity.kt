@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import ml.moneo.app.R
-import ml.moneo.app.activity.fragment.PreferenceFragment
 import ml.moneo.app.view.theme.Theme
 
 abstract class ComposeActivity : ComponentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -27,7 +26,7 @@ abstract class ComposeActivity : ComponentActivity(), SharedPreferences.OnShared
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
-        setDefaultSettings(sharedPreferences)
+        currentTheme.value = sharedPreferences.getString("theme", "system")
 
         super.onCreate(bundle)
 
@@ -47,14 +46,6 @@ abstract class ComposeActivity : ComponentActivity(), SharedPreferences.OnShared
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (sharedPreferences != null && key == "theme") {
             currentTheme.value = sharedPreferences.getString(key, "system")
-        }
-    }
-
-    private fun setDefaultSettings(sharedPreferences: SharedPreferences?) {
-        if (sharedPreferences != null) {
-            val theme = sharedPreferences.getString("theme", "system")
-            currentTheme.value = theme
-            PreferenceFragment.setAppNightMode(theme!!)
         }
     }
 }
