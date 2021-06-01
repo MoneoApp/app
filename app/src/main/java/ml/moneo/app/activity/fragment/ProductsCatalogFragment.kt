@@ -1,6 +1,7 @@
 package ml.moneo.app.activity.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,7 +13,7 @@ import ml.moneo.app.model.Remote
 import ml.moneo.app.view.component.CatalogAdapter
 import ml.moneo.app.viewmodel.ProductsViewModel
 
-class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview){
+class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview) {
 
     private lateinit var binding: FragmentCatalogOverviewBinding
     private lateinit var productsViewModel: ProductsViewModel
@@ -28,7 +29,19 @@ class ProductsCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overvi
         binding = FragmentCatalogOverviewBinding.bind(view)
         productsViewModel = ViewModelProvider(requireActivity()).get(ProductsViewModel::class.java)
 
-        arguments?.let { productsViewModel.getProducts(it.getString("PRODUCT_ID", "")) }
+        arguments?.let {
+            it.getStringArrayList("PRODUCT_IDS")?.let { it1 ->
+
+                Log.d("labeltest", "product catalog fragment")
+                Log.d("labeltest", it1.toString())
+
+                productsViewModel.getProducts(
+                    it1
+                )
+            }
+        }
+
+        Log.d("labeltest", productsViewModel.getAllProductsBySearch().value.toString())
 
         setupProductsRecyclerview()
 

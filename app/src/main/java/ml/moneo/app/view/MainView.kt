@@ -28,13 +28,12 @@ import ml.moneo.app.activity.CatalogsOverviewActivity
 import ml.moneo.app.util.apolloClient
 import ml.moneo.app.view.component.CoolCamera
 import java.io.IOException
+import java.util.ArrayList
 
 @Composable
 fun WelcomeView() {
-    //var id by remember { mutableStateOf<String?>(null) }
-    val possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
+    var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
     val context = LocalContext.current
-
     val labels = remember {
         try {
             val inputStream = context.assets.open("labels.txt")
@@ -51,37 +50,19 @@ fun WelcomeView() {
 
     CoolCamera({ result ->
         if (result.isEmpty()) {
-            possibleIds.clear()
             return@CoolCamera
         }
 
-        val client = apolloClient()
-        GlobalScope.launch {
-            result.forEach {
-                val identification = labels[it.index]
+        val list = mutableListOf<String>()
+        result.forEach {
+            val identification = labels[it.index]
 
-                if (identification == "Background") {
-                    return@launch
-                }
-
-                val response = try {
-                    client.query(DeviceByIdQuery(identification)).await()
-
-                } catch (e: ApolloException) {
-                    Log.d("labeltest", e.toString())
-                    return@launch
-                }
-
-                val device = response.data?.device
-
-                if (device == null || response.hasErrors()) {
-                    response.errors?.firstOrNull()?.message?.let { it1 -> Log.d("labeltest", it1) };
-                    return@launch
-                }
-
-                possibleIds.add(device.id)
+            if (identification == "Background") {
+                return@CoolCamera
             }
+            list.add(identification)
         }
+        possibleIds = list
     }, { }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
@@ -127,22 +108,18 @@ fun WelcomeView() {
     }
 
     DisposableEffect(possibleIds) {
-//        if (possibleIds.size == 0) {
-//            return@DisposableEffect onDispose {}
-//        }
+        if (possibleIds.size == 0) {
+            return@DisposableEffect onDispose {}
+        }
 
         val job = GlobalScope.launch {
             delay(500)
 
-            Log.d("labeltest", "All resulted device ids: ")
-            possibleIds.forEach {
-                Log.d("labeltest", "Device id: $it")
+            val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
+                putStringArrayListExtra("PRODUCT_IDS", possibleIds as ArrayList<String>)
             }
-//            val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
-//                putExtra("PRODUCT_ID", id)
-//            }
-//
-//            startActivity(context, intent, null)
+
+            startActivity(context, intent, null)
         }
 
         onDispose {
