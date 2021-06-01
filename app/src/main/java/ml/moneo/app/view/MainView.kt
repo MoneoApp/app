@@ -1,7 +1,6 @@
 package ml.moneo.app.view
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,16 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-import com.apollographql.apollo.coroutines.await
-import com.apollographql.apollo.exception.ApolloException
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.util.apolloClient
+import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.CoolCamera
 import java.io.IOException
 import java.util.ArrayList
@@ -48,6 +44,8 @@ fun WelcomeView() {
         }
     }
 
+    var catalogOpen = false
+
     CoolCamera({ result ->
         if (result.isEmpty()) {
             return@CoolCamera
@@ -62,7 +60,10 @@ fun WelcomeView() {
             }
             list.add(identification)
         }
-        possibleIds = list
+
+        if (possibleIds.count() < list.count()) {
+            possibleIds = list
+        }
     }, { }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
@@ -108,7 +109,7 @@ fun WelcomeView() {
     }
 
     DisposableEffect(possibleIds) {
-        if (possibleIds.size == 0) {
+        if (possibleIds.size == 0 || catalogOpen) {
             return@DisposableEffect onDispose {}
         }
 
@@ -119,11 +120,20 @@ fun WelcomeView() {
                 putStringArrayListExtra("PRODUCT_IDS", possibleIds as ArrayList<String>)
             }
 
+            catalogOpen = true
             startActivity(context, intent, null)
+
+            GlobalScope.launch {
+                delay(3000)
+                possibleIds = mutableListOf()
+                catalogOpen = false
+            }
         }
 
         onDispose {
             job.cancel()
         }
     }
+
+
 }
