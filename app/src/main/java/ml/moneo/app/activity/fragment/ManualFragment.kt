@@ -2,7 +2,6 @@ package ml.moneo.app.activity.fragment
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -23,6 +21,7 @@ import ml.moneo.ManualByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
+import ml.moneo.type.InteractionType
 import java.util.*
 
 class ManualFragment : Fragment(), Scene.OnUpdateListener {
@@ -129,21 +128,28 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         var anchorPosition: ManualByIdQuery.Interaction? = manualViewModel.getAnchorPosition()
 
         manualViewModel.getInteractions().forEach { interaction ->
-            ViewRenderable.builder()
-                .setView(fragment.context, R.layout.button)
+            var future = ViewRenderable.builder();
+
+            if(interaction.type == InteractionType.SQUARE)
+            {
+                future.setView(fragment.context, R.layout.button_square);
+            }
+            else if(interaction.type == InteractionType.CIRCLE)
+            {
+                future.setView(fragment.context, R.layout.button_circle);
+            }
+
+            future
                 .build()
                 .thenAccept { renderable ->
                     renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
                     var element = renderable.view.findViewById<Button>(R.id.overlay_button) as View
 
-
                     val node = TransformableNode(this.fragment.transformationSystem)
 
                     element.layoutParams.height = interaction.height.toInt()/10
                     element.layoutParams.width = interaction.width.toInt()/10
-
-                    //
 
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
