@@ -2,6 +2,7 @@ package ml.moneo.app.activity.fragment
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -136,15 +137,18 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                     renderable.isShadowReceiver = false
                     var element = renderable.view.findViewById<Button>(R.id.overlay_button) as View
 
+
                     val node = TransformableNode(this.fragment.transformationSystem)
 
                     element.layoutParams.height = interaction.height.toInt()/10
                     element.layoutParams.width = interaction.width.toInt()/10
 
+                    //
+
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
 
-                    var xPos = (((interaction.x.toFloat()) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
+                    var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
                     var yPos = (((interaction.y.toFloat()) - anchorPosition!!.y.toFloat()) / ((anchorPosition!!.height.toFloat() + anchorPosition!!.y.toFloat()) - anchorPosition!!.y.toFloat())) -.5f
                     var pos = Vector3(
                         (((xPos)) * aImage.extentX),
