@@ -1,7 +1,6 @@
 package ml.moneo.app.view
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,22 +15,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-import com.apollographql.apollo.coroutines.await
-import com.apollographql.apollo.exception.ApolloException
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.util.apolloClient
+import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.CoolCamera
 import java.io.IOException
+import java.util.ArrayList
 
 @Composable
 fun WelcomeView() {
-    var id by remember { mutableStateOf<String?>(null) }
+    var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
     val context = LocalContext.current
     val labels = remember {
         try {
@@ -47,41 +44,27 @@ fun WelcomeView() {
         }
     }
 
+    var catalogOpen = false
+
     CoolCamera({ result ->
         if (result.isEmpty()) {
-            id = null
-
             return@CoolCamera
         }
 
-        val first = labels[result.first().index]
+        val list = mutableListOf<String>()
+        result.forEach {
+            val identification = labels[it.index]
 
-        if (id == first) {
-            return@CoolCamera
+            if (identification == "Background") {
+                return@CoolCamera
+            }
+            list.add(identification)
         }
 
-        val client = apolloClient()
-
-        GlobalScope.launch {
-            val response = try {
-                client.query(DeviceByIdQuery(first)).await()
-            } catch (e: ApolloException) {
-                return@launch
-            }
-
-            val device = response.data?.device
-
-            if (device == null || response.hasErrors()) {
-                println(response.errors?.firstOrNull()?.message);
-
-                return@launch
-            }
-
-            Log.d("MON/API", "${device.brand} ${device.model}")
-
-            id = first
+        if (possibleIds.count() < list.count()) {
+            possibleIds = list
         }
-    }, { id = it }) {
+    }, { }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
 
@@ -125,8 +108,8 @@ fun WelcomeView() {
         }
     }
 
-    DisposableEffect(id) {
-        if (id == null) {
+    DisposableEffect(possibleIds) {
+        if (possibleIds.size == 0 || catalogOpen) {
             return@DisposableEffect onDispose {}
         }
 
@@ -134,14 +117,23 @@ fun WelcomeView() {
             delay(500)
 
             val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
-                putExtra("PRODUCT_ID", id)
+                putStringArrayListExtra("PRODUCT_IDS", possibleIds as ArrayList<String>)
             }
 
+            catalogOpen = true
             startActivity(context, intent, null)
+
+            GlobalScope.launch {
+                delay(3000)
+                possibleIds = mutableListOf()
+                catalogOpen = false
+            }
         }
 
         onDispose {
             job.cancel()
         }
     }
+
+
 }

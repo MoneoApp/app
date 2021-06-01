@@ -63,9 +63,9 @@ class CatalogsOverviewActivity : AppCompatActivity() {
                         .show(supportFragmentManager.findFragmentByTag(PRODUCTS_CATALOG_FRAGMENT)!!)
                         .commit();
                 } else {
-                    var fragment = ProductsCatalogFragment()
-                    var bundle = Bundle()
-                    bundle.putString("PRODUCT_ID", intent.getStringExtra("PRODUCT_ID"))
+                    val fragment = ProductsCatalogFragment()
+                    val bundle = Bundle()
+                    bundle.putStringArrayList("PRODUCT_IDS", intent.getStringArrayListExtra("PRODUCT_IDS"))
 
                     fragment.arguments = bundle
 

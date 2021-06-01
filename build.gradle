@@ -19,3 +19,7 @@ buildscript {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task downloadApolloSchema(type: Exec){
+    commandLine './gradlew downloadApolloSchema --endpoint=https://staging.moneo.ml/api --schema=src/main/graphql/ml/moneo/schema.json'
+}

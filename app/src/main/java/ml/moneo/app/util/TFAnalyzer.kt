@@ -17,8 +17,8 @@ class TFAnalyzer(
         .setAssetFilePath("model.tflite")
         .build()
     private val options = CustomImageLabelerOptions.Builder(model)
-        .setMaxResultCount(1)
-        .setConfidenceThreshold(0.75f)
+        .setMaxResultCount(99)
+        .setConfidenceThreshold(0.1f)
         .build()
     private val imageLabeler = ImageLabeling.getClient(options)
 

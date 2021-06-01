@@ -55,25 +55,26 @@ class ProductsViewModel : ViewModel() {
         selectedProduct = MutableLiveData<Remote>()
     }
 
-    fun getProducts(deviceId: String) {
+    fun getProducts(deviceIds: List<String>) {
         val client = apolloClient()
+        val tempList: MutableList<Remote> = mutableListOf()
 
         GlobalScope.launch {
-            val response = try {
-                client.query(DeviceByIdQuery(deviceId)).await()
-            } catch (e: ApolloException) {
-                return@launch
+            deviceIds.forEach {
+                val response = try {
+                    client.query(DeviceByIdQuery(it)).await()
+                } catch (e: ApolloException) {
+                    return@launch
+                }
+
+                val device = response.data?.device
+                if (device == null || response.hasErrors()) {
+                    println(response.errors?.firstOrNull()?.message);
+                    return@launch
+                }
+
+                tempList.add(Remote(device.model, device.id, R.drawable.default_remote))
             }
-
-            val device = response.data?.device
-            if (device == null || response.hasErrors()) {
-                println(response.errors?.firstOrNull()?.message);
-
-                return@launch
-            }
-
-            var tempList: MutableList<Remote> = mutableListOf()
-            tempList.add(Remote(device.model, device.id, R.drawable.default_remote))
 
             availableProducts.postValue(tempList)
         }
