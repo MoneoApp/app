@@ -39,6 +39,17 @@ query ManualById($id:ID!) {
       model
       brand
       image
+      interactions{
+        id
+        type
+        x
+        y
+        width
+        height
+        rotation
+        title
+        description
+      }
     }
     steps{
       id

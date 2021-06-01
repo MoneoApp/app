@@ -9,7 +9,7 @@ android {
     buildToolsVersion '30.0.3'
 
     defaultConfig {
-        applicationId "ml.moneo.prototype"
+        applicationId "ml.moneo.app"
         minSdk 24
         targetSdk 30
         versionCode 1
@@ -56,8 +56,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.6.0-alpha03'
-    implementation 'androidx.appcompat:appcompat:1.3.0-rc01'
+    implementation 'androidx.core:core-ktx:1.6.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha01'
     implementation 'androidx.activity:activity-compose:1.3.0-alpha07'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha01'
@@ -68,9 +68,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0-beta02'
     implementation "androidx.preference:preference-ktx:1.1.1"
 
-    implementation 'com.google.ar:core:1.23.0'
+    implementation 'com.google.ar:core:1.24.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.17.1'
     implementation 'com.google.mlkit:image-labeling-custom:16.3.1'
+    implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.1.5'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'dev.chrisbanes.accompanist:accompanist-insets:0.6.2'
 

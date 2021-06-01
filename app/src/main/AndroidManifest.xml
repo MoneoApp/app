@@ -15,6 +15,10 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
@@ -31,5 +35,8 @@
         <activity android:name=".activity.PreferenceActivity"/>
         <activity android:name=".activity.CreditsActivity"/>
         <activity android:name=".activity.CatalogsOverviewActivity"/>
+        <activity android:name=".activity.OnboardingActivity" />
+        <activity android:name=".activity.ManualActivity" />
+        <activity android:name=".activity.CatalogsOverviewActivity" />
     </application>
 </manifest>

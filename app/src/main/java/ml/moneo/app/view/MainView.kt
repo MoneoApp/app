@@ -2,19 +2,18 @@ package ml.moneo.app.view
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Support
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,30 +24,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
-import com.apollographql.apollo.coroutines.await
-import com.apollographql.apollo.exception.ApolloException
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.activity.HelpActivity
-import ml.moneo.app.util.apolloClient
 import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
+import ml.moneo.app.view.component.CoolCamera
 import ml.moneo.app.activity.CreditsActivity
 import ml.moneo.app.activity.PreferenceActivity
-import ml.moneo.app.view.component.TFCamera
 import java.io.IOException
+import java.util.ArrayList
 
 @Composable
 fun WelcomeView() {
-    var open by remember { mutableStateOf(false) }
-    var label by remember { mutableStateOf<String?>(null) }
-    var id by remember { mutableStateOf<String?>(null) }
+    var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
     val context = LocalContext.current
     val labels = remember {
         try {
@@ -64,67 +57,27 @@ fun WelcomeView() {
         }
     }
 
-    if (open) {
-        Dialog({ open = false }) {
-            Surface(
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column {
-                    Text(
-                        text = label ?: "",
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Button({
-                        open = false
-                        val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
-                            putExtra("PRODUCT_NAME", label)
-                            putExtra("PRODUCT_ID", id)
-                        }
-                        startActivity(context, intent, null)
-                    }) {
-                        Text(stringResource(R.string.manual))
-                    }
-                }
+    var catalogOpen = false
+
+    CoolCamera({ result ->
+        if (result.isEmpty()) {
+            return@CoolCamera
+        }
+
+        val list = mutableListOf<String>()
+        result.forEach {
+            val identification = labels[it.index]
+
+            if (identification == "Background") {
+                return@CoolCamera
             }
-        }
-    }
-
-    TFCamera({ result ->
-        if (open) {
-            return@TFCamera
-        } else if (result.isEmpty()) {
-            label = null
-
-            return@TFCamera
+            list.add(identification)
         }
 
-        val first = labels[result.first().index]
-
-        if (label != first) {
-
-            val client = apolloClient()
-
-            GlobalScope.launch {
-                val response = try {
-                    client.query(DeviceByIdQuery(first)).await()
-                } catch (e: ApolloException) {
-                    return@launch
-                }
-
-                val device = response.data?.device
-                if (device == null || response.hasErrors()) {
-                    println(response.errors?.firstOrNull()?.message);
-
-                    return@launch
-                }
-
-                Log.d("Loggie", "${device.brand} ${device.model}")
-
-                id = first
-                label = device.model
-            }
+        if (possibleIds.count() < list.count()) {
+            possibleIds = list
         }
-    }) {
+    }, { }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
 
@@ -173,14 +126,26 @@ fun WelcomeView() {
         }
     }
 
-    DisposableEffect(label) {
-        if (label == null || label == "Background") {
+    DisposableEffect(possibleIds) {
+        if (possibleIds.size == 0 || catalogOpen) {
             return@DisposableEffect onDispose {}
         }
 
         val job = GlobalScope.launch {
             delay(500)
-            open = true
+
+            val intent = Intent(context, CatalogsOverviewActivity::class.java).apply {
+                putStringArrayListExtra("PRODUCT_IDS", possibleIds as ArrayList<String>)
+            }
+
+            catalogOpen = true
+            startActivity(context, intent, null)
+
+            GlobalScope.launch {
+                delay(3000)
+                possibleIds = mutableListOf()
+                catalogOpen = false
+            }
         }
 
         onDispose {
