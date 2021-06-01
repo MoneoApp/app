@@ -10,9 +10,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ml.moneo.DeviceByIdQuery
 import ml.moneo.ManualByIdQuery
+import ml.moneo.ManualByIdQuery.*
 import ml.moneo.app.R
-import ml.moneo.app.model.*
+//import ml.moneo.app.model.*
 import ml.moneo.app.util.apolloClient
+import ml.moneo.type.InteractionType
 
 class ManualViewModel : ViewModel() {
     private val manual = MutableLiveData<Manual>()
@@ -28,18 +30,29 @@ class ManualViewModel : ViewModel() {
     }
 
     fun getDescription(): String {
-        return currentStep.value?.let { manual.value!!.steps[it].description }!!
+        return currentStep.value?.let { manual.value!!.steps[it].text }!!
     }
 
-    fun getInteractions(): List<Interaction> {
+    fun getInteractions(): List<Interaction1> {
         var positions = mutableListOf<Vector3>()
 
-        return manual.value!!.steps[currentStep.value!!].interaction
+        return manual.value!!.steps[currentStep.value!!].interactions
+    }
+
+    fun getAnchorPosition(): Interaction? {
+        manual.value!!.device.interactions.forEach { it ->
+            if(it.type == InteractionType.ANCHOR)
+            {
+                return it;
+            }
+        }
+
+        return null;
     }
 
     fun next() {
         currentStep.value?.let {
-            if (it >= manual.value!!.getStepCount() - 1) {
+            if (it >= manual.value!!.steps.count() - 1) {
                 return
             } else {
                 currentStep.value = it + 1;
@@ -76,40 +89,7 @@ class ManualViewModel : ViewModel() {
                 return@launch
             }
 
-            var steps = mutableListOf<Step>()
-            tManual.steps.forEach{ step ->
-
-                var interactions = mutableListOf<Interaction>()
-
-                step.interactions.forEach{ interaction ->
-
-                    interactions.add(Interaction(
-                        interaction.id,
-                        interaction.x,
-                        interaction.y,
-                        interaction.width,
-                        interaction.height,
-                        interaction.title,
-                        Overlay("0", "overlay0", listOf()),
-                        listOf()
-                    ))
-                }
-
-                steps.add(Step(
-                    step.id,
-                    step.text,
-                    step.order,
-                    interactions
-                ))
-            }
-
-            steps.sortBy { it.order }
-
-            manual.postValue(Manual(
-                id = tManual.id,
-                name = tManual.title,
-                steps = steps
-            ))
+            manual.postValue(tManual!!)
         }
     }
 

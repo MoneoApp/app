@@ -17,6 +17,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
+import ml.moneo.ManualByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
@@ -121,6 +122,13 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         val anchorNode = AnchorNode(anchor)
         currentNode = anchorNode
 
+        var anchorPosition: ManualByIdQuery.Interaction? = manualViewModel.getAnchorPosition()
+        var anchorCenter = Vector3(
+            ((anchorPosition!!.x.toFloat() + (anchorPosition!!.width / 2)).toFloat()),
+            0.0f,
+            ((anchorPosition.y.toFloat() + (anchorPosition!!.height / 2)).toFloat())
+        )
+
         manualViewModel.getInteractions().forEach { interaction ->
             ViewRenderable.builder()
                 .setView(fragment.context, R.layout.button)
@@ -133,7 +141,10 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                    node.localPosition = Vector3(interaction.x.toFloat(), 0.0f, interaction.y.toFloat())
+
+                    var nodePosition = Vector3((interaction.x.toFloat() - anchorCenter.x), 0.0f, (interaction.y.toFloat() - anchorCenter.z));
+
+                    node.localPosition = Vector3(nodePosition.x/9000, nodePosition.y, nodePosition.z/9000)
                     //node.localScale = Vector3(interaction.width.toFloat(), 1.0f, interaction.height.toFloat())
                     node.setParent(anchorNode)
                 }
