@@ -63,6 +63,7 @@ class GuidesCatalogFragment : CatalogFragment(R.layout.fragment_catalog_overview
 
         val intent = Intent(context, ManualActivity::class.java)
         intent.putExtra("MANUAL_ID", guidesViewModel.getSelectedGuide().value?.guideId)
+        intent.putExtra("DEVICE_ID", productsViewModel.getSelectedProduct().value?.remoteId)
         startActivity(intent)
     }
 

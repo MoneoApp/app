@@ -9,7 +9,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@drawable/rounded_corners"
-        android:backgroundTint="@color/background_gray"
+        android:backgroundTint="@color/background_item"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
