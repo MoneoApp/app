@@ -47,8 +47,7 @@ query ManualById($id:ID!) {
         width
         height
         rotation
-        title
-        description
+        color
       }
     }
     steps{
@@ -62,8 +61,8 @@ query ManualById($id:ID!) {
         y
         width
         height
-        title
-        description
+        rotation
+        color
       }
     }
   }
