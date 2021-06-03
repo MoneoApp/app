@@ -155,7 +155,6 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     element.layoutParams.height = interaction.height.toInt()/10
                     element.layoutParams.width = interaction.width.toInt()/10
-                    //ImageViewCompat.setImageTintMode(element, PorterDuff.Mode.DST_ATOP);
                     ImageViewCompat.setImageTintList(element,
                         interaction.color?.let {
                             ColorStateList.valueOf(Color.parseColor(it)) })
