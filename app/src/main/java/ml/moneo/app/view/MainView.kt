@@ -77,7 +77,13 @@ fun WelcomeView() {
         if (possibleIds.count() < list.count()) {
             possibleIds = list
         }
-    }, { }) {
+    }, {
+        if (possibleIds.count() <= 0) {
+            val list = mutableListOf<String>()
+            list.add(it);
+            possibleIds = list;
+        }
+    }) {
         Toast.makeText(context, R.string.camera_error, Toast.LENGTH_SHORT).show()
     }
 

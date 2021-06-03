@@ -1,12 +1,17 @@
 package ml.moneo.app.activity.fragment
 
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.*
@@ -144,12 +149,15 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                 .thenAccept { renderable ->
                     renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
-                    var element = renderable.view.findViewById<Button>(R.id.overlay_button) as View
+                    var element = renderable.view.findViewById<ImageView>(R.id.overlay_button) as ImageView
 
                     val node = TransformableNode(this.fragment.transformationSystem)
 
                     element.layoutParams.height = interaction.height.toInt()/10
                     element.layoutParams.width = interaction.width.toInt()/10
+                    ImageViewCompat.setImageTintList(element,
+                        interaction.color?.let {
+                            ColorStateList.valueOf(Color.parseColor(it)) })
 
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
