@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -99,7 +100,8 @@ fun WelcomeView() {
                             MaterialTheme.colors.background
                         )
                     )
-                ),
+                )
+                .navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -110,8 +112,7 @@ fun WelcomeView() {
                     .padding(vertical = 24.dp)
                     .align(Alignment.Center)
             )
-
-            Box(modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
+            Box(Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
                 ContextPopup()
             }
         }
