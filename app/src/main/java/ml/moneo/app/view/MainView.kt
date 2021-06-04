@@ -12,8 +12,6 @@ import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Support
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,14 +28,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
-import ml.moneo.app.activity.HelpActivity
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.view.component.CoolCamera
 import ml.moneo.app.activity.CreditsActivity
+import ml.moneo.app.activity.HelpActivity
 import ml.moneo.app.activity.PreferenceActivity
-import java.io.IOException
-import java.util.ArrayList
+import ml.moneo.app.util.openActivity
+import ml.moneo.app.view.component.CoolCamera
+import java.util.*
 
 @Composable
 fun WelcomeView() {
@@ -55,9 +52,10 @@ fun WelcomeView() {
         result.forEach {
             val identification = it.text
 
-            if (identification == "Background") {
+            if (identification.equals("background", true)) {
                 return@CoolCamera
             }
+
             list.add(identification)
         }
 
