@@ -1,5 +1,6 @@
 package ml.moneo.app.util
 
+import android.util.Log
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -23,8 +24,10 @@ class TFAnalyzer(
         val model = CustomRemoteModel.Builder(FirebaseModelSource.Builder("moneo").build()).build()
         val downloadConditions = DownloadConditions.Builder().build()
 
-        RemoteModelManager.getInstance().deleteDownloadedModel(model).addOnSuccessListener {
-            RemoteModelManager.getInstance().download(model, downloadConditions).addOnSuccessListener {
+        RemoteModelManager.getInstance().download(model, downloadConditions)
+            .addOnSuccessListener {
+                Log.i("MONEO/ML", "Successfully downloaded model")
+
                 val options = CustomImageLabelerOptions.Builder(model)
                     .setMaxResultCount(99)
                     .setConfidenceThreshold(0.5f)
@@ -32,7 +35,9 @@ class TFAnalyzer(
 
                 labeler = ImageLabeling.getClient(options)
             }
-        }
+            .addOnFailureListener {
+                Log.e("MONEO/ML", "Something went wrong", it)
+            }
     }
 
     @ExperimentalGetImage
