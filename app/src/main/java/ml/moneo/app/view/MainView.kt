@@ -21,28 +21,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.view.component.CoolCamera
-import java.io.IOException
-import java.util.ArrayList
+import java.util.*
 
 @Composable
 fun WelcomeView() {
     var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
     val context = LocalContext.current
-    val labels = remember {
-        try {
-            val inputStream = context.assets.open("labels.txt")
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-
-            inputStream.read(buffer)
-            String(buffer).split("\n", "\r\n")
-        } catch (e: IOException) {
-            e.printStackTrace()
-            listOf()
-        }
-    }
 
     var catalogOpen = false
 
@@ -53,7 +38,7 @@ fun WelcomeView() {
 
         val list = mutableListOf<String>()
         result.forEach {
-            val identification = labels[it.index]
+            val identification = it.text
 
             if (identification == "Background") {
                 return@CoolCamera

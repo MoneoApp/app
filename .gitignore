@@ -4,5 +4,6 @@ build/
 captures/
 local.properties
 secret.properties
+google-services.json
 .externalNativeBuild
 .cxx
