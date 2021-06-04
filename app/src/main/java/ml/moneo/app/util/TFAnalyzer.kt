@@ -27,7 +27,7 @@ class TFAnalyzer(
             RemoteModelManager.getInstance().download(model, downloadConditions).addOnSuccessListener {
                 val options = CustomImageLabelerOptions.Builder(model)
                     .setMaxResultCount(99)
-                    .setConfidenceThreshold(0.1f)
+                    .setConfidenceThreshold(0.5f)
                     .build()
 
                 labeler = ImageLabeling.getClient(options)
