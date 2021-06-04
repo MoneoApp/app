@@ -23,13 +23,15 @@ class TFAnalyzer(
     init {
         val downloadConditions = DownloadConditions.Builder().build()
 
-        RemoteModelManager.getInstance().download(model, downloadConditions).addOnSuccessListener {
-            val options = CustomImageLabelerOptions.Builder(model)
-                .setMaxResultCount(99)
-                .setConfidenceThreshold(0.1f)
-                .build()
+        RemoteModelManager.getInstance().deleteDownloadedModel(model).addOnSuccessListener {
+            RemoteModelManager.getInstance().download(model, downloadConditions).addOnSuccessListener {
+                val options = CustomImageLabelerOptions.Builder(model)
+                    .setMaxResultCount(99)
+                    .setConfidenceThreshold(0.1f)
+                    .build()
 
-            labeler = ImageLabeling.getClient(options)
+                labeler = ImageLabeling.getClient(options)
+            }
         }
     }
 
