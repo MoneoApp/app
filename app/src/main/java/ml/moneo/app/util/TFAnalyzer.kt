@@ -17,10 +17,10 @@ class TFAnalyzer(
     private val onSuccess: (List<ImageLabel>) -> Unit,
     private val onError: () -> Unit
 ) : ImageAnalysis.Analyzer {
-    private val model = CustomRemoteModel.Builder(FirebaseModelSource.Builder("moneo").build()).build()
     private var labeler: ImageLabeler? = null
 
     init {
+        val model = CustomRemoteModel.Builder(FirebaseModelSource.Builder("moneo").build()).build()
         val downloadConditions = DownloadConditions.Builder().build()
 
         RemoteModelManager.getInstance().deleteDownloadedModel(model).addOnSuccessListener {
@@ -47,6 +47,8 @@ class TFAnalyzer(
                 .addOnSuccessListener { onSuccess(it) }
                 .addOnFailureListener { onError() }
                 .addOnCompleteListener { proxy.close() }
+        } else {
+            proxy.close()
         }
     }
 }

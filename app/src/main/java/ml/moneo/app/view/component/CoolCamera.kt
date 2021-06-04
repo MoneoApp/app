@@ -15,7 +15,7 @@ fun CoolCamera(
     onError: () -> Unit
 ) {
     val tfExecutor = remember { Executors.newSingleThreadExecutor() }
-    val qrExecutor = remember { Executors.newSingleThreadExecutor() }
+//    val qrExecutor = remember { Executors.newSingleThreadExecutor() }
 
     Camera(
         getCases = {
@@ -34,7 +34,7 @@ fun CoolCamera(
     DisposableEffect(Unit) {
         onDispose {
             tfExecutor.shutdown()
-            qrExecutor.shutdown()
+//            qrExecutor.shutdown()
         }
     }
 }
