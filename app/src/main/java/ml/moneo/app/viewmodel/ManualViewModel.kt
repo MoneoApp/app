@@ -39,6 +39,7 @@ class ManualViewModel : ViewModel() {
         return manual.value!!.steps[currentStep.value!!].interactions
     }
 
+
     fun getAnchorPosition(): Interaction? {
         manual.value!!.device.interactions.forEach { it ->
             if(it.type == InteractionType.ANCHOR)

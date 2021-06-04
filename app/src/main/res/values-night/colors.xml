@@ -4,7 +4,7 @@
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
     <color name="night">#ff121212</color>
-    <color name="background">#ffffffff</color>
+    <color name="background">#ff121212</color>
     <color name="background_item">#efefef</color>
     <color name="background_item_darker">#454545</color>
 </resources>
