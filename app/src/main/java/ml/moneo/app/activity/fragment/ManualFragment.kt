@@ -57,50 +57,42 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         binding = FragmentManualBinding.inflate(inflater, container, false)
         manualViewModel = ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
 
-        return binding.root
-    }
+        if(manualViewModel.getManual().value != null)
+        {
+            manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
+                binding.includedSteps.manualTextview.text =
+                    getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
+            })
 
-    fun initializeAR(manualId: String)
-    {
-        this.manualId = manualId;
-        this.manualId?.let { manualViewModel.setupManual(it) }
+            binding.includedSteps.nextButton.setOnClickListener {
+                manualViewModel.next()
 
-        manualViewModel.getManual().observe(viewLifecycleOwner, {
-            if(it != null)
-            {
-                manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
-                    binding.includedSteps.manualTextview.text =
-                        getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
-                })
-
-                binding.includedSteps.nextButton.setOnClickListener {
-                    manualViewModel.next()
-
-                    if(active)
-                    {
-                        showLayout(this.anchor!!, this.image!!)
-                    }
+                if(active)
+                {
+                    showLayout(this.anchor!!, this.image!!)
                 }
-
-                binding.includedSteps.previousButton.setOnClickListener {
-                    manualViewModel.previous()
-
-                    if(active)
-                    {
-                        showLayout(this.anchor!!, this.image!!)
-                    }
-                }
-
-                binding.includedSteps.stepsCloseButton.setOnClickListener{
-                    activity?.finish()
-                }
-
-                fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
-                fragment.arSceneView.scene.addOnUpdateListener(this)
-
-                fragment.arSceneView.planeRenderer.isEnabled = false;
             }
-        })
+
+            binding.includedSteps.previousButton.setOnClickListener {
+                manualViewModel.previous()
+
+                if(active)
+                {
+                    showLayout(this.anchor!!, this.image!!)
+                }
+            }
+
+            binding.includedSteps.stepsCloseButton.setOnClickListener{
+                activity?.finish()
+            }
+
+            fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
+            fragment.arSceneView.scene.addOnUpdateListener(this)
+
+            fragment.arSceneView.planeRenderer.isEnabled = false;
+        }
+
+        return binding.root
     }
 
     fun setupDatabase(config: Config, session: Session) {

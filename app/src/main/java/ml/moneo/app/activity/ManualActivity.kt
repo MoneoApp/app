@@ -4,42 +4,52 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import ml.moneo.app.R
 import ml.moneo.app.activity.fragment.ManualFragment
-import ml.moneo.app.activity.fragment.ManualPreparationFragment
 import ml.moneo.app.view.component.AnchorPopup
+import ml.moneo.app.viewmodel.ManualViewModel
 
 class ManualActivity : AppCompatActivity()
 {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("Logge", "Hibabe")
+    private lateinit var manualViewModel: ManualViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_prep);
+        supportActionBar?.hide();
 
-        Log.d("Logge", "Hibabe")
+        manualViewModel = ViewModelProvider(this).get(ManualViewModel::class.java)
 
-//        var deviceId = ""
-//
-//        Log.d("Logge", "Hibabe")
-//
-////        val fragment = supportFragmentManager.findFragmentById(R.id.included_manual_prep) as ManualPreparationFragment
-////        Log.d("Logge", fragment.toString())
-////        intent.getStringExtra("MANUAL_ID")?.let { Log.d("Logge", it) }
-////
-////        intent.getStringExtra("MANUAL_ID")?.let { fragment.initializeAR(it) }
-////        intent.getStringExtra("DEVICE_ID")?.let { deviceId = it }
-//
-//        val sharedPreferences = PreferenceManager
-//            .getDefaultSharedPreferences(applicationContext)
-//
-//        findViewById<ComposeView>(R.id.my_composable).setContent {
-//            AnchorPopup(sharedPreferences.getString("theme", "system")!!, "https://staging.moneo.ml/api/${deviceId}/anchor")
-//        }
+        intent.getStringExtra("MANUAL_ID")?.let { initializeAR(it) }
+    }
 
-        //ALTERNATIVE
+    fun initializeAR(manualId: String) {
+        manualViewModel.setupManual(manualId)
+
+        manualViewModel.getManual().observe(this, {
+            manualViewModel.loadBitmap()
+        })
+
+        manualViewModel.getBitmap().observe(this, {
+            setContentView(R.layout.activity_main);
+            var deviceId = ""
+
+            Log.d("Logge", "Hibabe")
+
+            val fragment = supportFragmentManager.findFragmentById(R.id.included_manual) as ManualFragment
+            Log.d("Logge", fragment.toString())
+            intent.getStringExtra("MANUAL_ID")?.let { Log.d("Logge", it) }
+
+            intent.getStringExtra("DEVICE_ID")?.let { deviceId = it }
+
+            val sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(applicationContext)
+
+            findViewById<ComposeView>(R.id.my_composable).setContent {
+                AnchorPopup(sharedPreferences.getString("theme", "system")!!, "https://staging.moneo.ml/api/${deviceId}/anchor")
+            }
+        })
     }
 }
