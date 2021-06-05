@@ -48,7 +48,6 @@ class ManualViewModel : ViewModel() {
     fun loadBitmap() {
         try {
             GlobalScope.launch{
-                Log.d("Tagge", getAnchorImageURL());
                 val url = URL(getAnchorImageURL());
                 var connection = url.openConnection() as HttpURLConnection;
                 connection.doInput = true;
