@@ -29,7 +29,7 @@ import java.util.*
 @Composable
 fun WelcomeView() {
     var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
-    var useQR by remember { mutableStateOf(true) }
+    var useQR by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var catalogOpen = false
@@ -81,7 +81,7 @@ fun WelcomeView() {
                 )
         ) {
             Row(Modifier.padding(top = 40.dp, start = 16.dp)) {
-                QRSwitch { useQR = it }
+                QRSwitch(useQR) { useQR = it }
             }
         }
         Box(

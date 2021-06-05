@@ -17,26 +17,27 @@ fun CoolCamera(
     onJump: (data: String) -> Unit,
     onError: () -> Unit
 ) {
-    val tfExecutor = remember { Executors.newSingleThreadExecutor() }
-    val qrExecutor = remember { Executors.newSingleThreadExecutor() }
+    val executor = remember { Executors.newSingleThreadExecutor() }
 
     Camera(
-        useCase = if (useQR) {
-            ImageAnalysis.Builder()
-                .build()
-                .also { it.setAnalyzer(qrExecutor, QRAnalyzer(onJump, onError)) }
-        } else {
-            ImageAnalysis.Builder()
-                .build()
-                .also { it.setAnalyzer(tfExecutor, TFAnalyzer(onSuccess, onError)) }
-        },
+        useCase = ImageAnalysis.Builder()
+            .build()
+            .also
+            {
+                it.setAnalyzer(
+                    executor,
+                    if (useQR)
+                        QRAnalyzer(onJump, onError)
+                    else
+                        TFAnalyzer(onSuccess, onError)
+                )
+            },
         onError = onError
     )
 
     DisposableEffect(Unit) {
         onDispose {
-            tfExecutor.shutdown()
-            qrExecutor.shutdown()
+            executor.shutdown()
         }
     }
 }

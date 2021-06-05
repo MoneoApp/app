@@ -1,6 +1,5 @@
 package ml.moneo.app.view.component
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
@@ -8,6 +7,7 @@ import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -15,11 +15,11 @@ import androidx.core.content.ContextCompat
 @Composable
 fun Camera(useCase: UseCase, onError: () -> Unit) {
     val owner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     AndroidView(
-        factory = { context ->
-            val providerFuture = ProcessCameraProvider.getInstance(context)
-            val view = PreviewView(context).apply {
+        factory = {
+            PreviewView(context).apply {
                 scaleType = PreviewView.ScaleType.FILL_CENTER
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -27,6 +27,9 @@ fun Camera(useCase: UseCase, onError: () -> Unit) {
                 )
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
             }
+        },
+        update = { view ->
+            val providerFuture = ProcessCameraProvider.getInstance(context)
 
             providerFuture.addListener({
                 val provider = providerFuture.get()
@@ -43,12 +46,9 @@ fun Camera(useCase: UseCase, onError: () -> Unit) {
                         useCase
                     )
                 } catch (e: Exception) {
-                    Log.d("moneta.camera", "Camera lifecycle binding failed", e)
                     onError()
                 }
             }, ContextCompat.getMainExecutor(context))
-
-            view
         }
     )
 }

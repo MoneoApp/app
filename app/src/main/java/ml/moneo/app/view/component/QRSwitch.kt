@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun QRSwitch(onSwitched: (Boolean) -> Unit) {
-    var switched by remember { mutableStateOf(true) }
+fun QRSwitch(default: Boolean, onSwitched: (Boolean) -> Unit) {
+    var switched by remember { mutableStateOf(default) }
 
     Row {
         Icon(
