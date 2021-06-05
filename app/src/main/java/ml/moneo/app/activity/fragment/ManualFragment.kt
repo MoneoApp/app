@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
@@ -22,11 +24,15 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import ml.moneo.ManualByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
 import ml.moneo.type.InteractionType
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 
 class ManualFragment : Fragment(), Scene.OnUpdateListener {
@@ -39,6 +45,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private var currentNode: AnchorNode? = null
     private var image: AugmentedImage? = null
 
+    private var manualId: String? = null;
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,58 +55,49 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         super.onCreateView(inflater, container, savedInstanceState)
 
         binding = FragmentManualBinding.inflate(inflater, container, false)
-        manualViewModel = ViewModelProvider(this).get(ManualViewModel::class.java)
+        manualViewModel = ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
+
+        if(manualViewModel.getManual().value != null)
+        {
+            manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
+                binding.includedSteps.manualTextview.text =
+                    getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
+            })
+
+            binding.includedSteps.nextButton.setOnClickListener {
+                manualViewModel.next()
+
+                if(active)
+                {
+                    showLayout(this.anchor!!, this.image!!)
+                }
+            }
+
+            binding.includedSteps.previousButton.setOnClickListener {
+                manualViewModel.previous()
+
+                if(active)
+                {
+                    showLayout(this.anchor!!, this.image!!)
+                }
+            }
+
+            binding.includedSteps.stepsCloseButton.setOnClickListener{
+                activity?.finish()
+            }
+
+            fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
+            fragment.arSceneView.scene.addOnUpdateListener(this)
+
+            fragment.arSceneView.planeRenderer.isEnabled = false;
+        }
 
         return binding.root
     }
 
-    fun initializeAR(manualId: String)
-    {
-        manualViewModel.setupManual(manualId)
-
-        manualViewModel.getManual().observe(viewLifecycleOwner, {
-            if(it != null)
-            {
-                manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
-                    binding.includedSteps.manualTextview.text =
-                        getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
-                })
-
-                binding.includedSteps.nextButton.setOnClickListener {
-                    manualViewModel.next()
-
-                    if(active)
-                    {
-                        showLayout(this.anchor!!, this.image!!)
-                    }
-                }
-
-                binding.includedSteps.previousButton.setOnClickListener {
-                    manualViewModel.previous()
-
-                    if(active)
-                    {
-                        showLayout(this.anchor!!, this.image!!)
-                    }
-                }
-
-                binding.includedSteps.stepsCloseButton.setOnClickListener{
-                    activity?.finish()
-                }
-
-                fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
-                fragment.arSceneView.scene.addOnUpdateListener(this)
-
-                fragment.arSceneView.planeRenderer.isEnabled = false;
-            }
-        })
-    }
-
     fun setupDatabase(config: Config, session: Session) {
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.white_remote_square)
         val db = AugmentedImageDatabase(session)
-
-        db.addImage("image", bitmap)
+        db.addImage("image", manualViewModel.getBitmap().value)
         config.augmentedImageDatabase = db
     }
 

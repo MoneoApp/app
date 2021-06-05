@@ -1,23 +1,29 @@
 package ml.moneo.app.viewmodel
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
+import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.sceneform.math.Vector3
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ml.moneo.DeviceByIdQuery
 import ml.moneo.ManualByIdQuery
 import ml.moneo.ManualByIdQuery.*
 import ml.moneo.app.R
 //import ml.moneo.app.model.*
 import ml.moneo.app.util.apolloClient
 import ml.moneo.type.InteractionType
+import java.net.HttpURLConnection
+import java.net.URL
 
 class ManualViewModel : ViewModel() {
     private val manual = MutableLiveData<Manual>()
+    private val bitmap = MutableLiveData<Bitmap>()
     private val currentStep = MutableLiveData(0)
 
     fun getManual(): LiveData<Manual>
@@ -39,6 +45,31 @@ class ManualViewModel : ViewModel() {
         return manual.value!!.steps[currentStep.value!!].interactions
     }
 
+    fun loadBitmap() {
+        try {
+            GlobalScope.launch{
+                val url = URL(getAnchorImageURL());
+                var connection = url.openConnection() as HttpURLConnection;
+                connection.doInput = true;
+                connection.connect();
+                val input = connection.inputStream;
+
+                bitmap.postValue(BitmapFactory.decodeStream(input))
+            }
+        } catch (e: Exception) {
+            // Log exception
+            Log.e("Tagge", e.toString());
+        }
+    }
+
+    fun getAnchorImageURL(): String {
+        return "https://staging.moneo.ml/api/${manual.value!!.device.id}/anchor"
+    }
+
+    fun getBitmap(): LiveData<Bitmap>
+    {
+        return this.bitmap;
+    }
 
     fun getAnchorPosition(): Interaction? {
         manual.value!!.device.interactions.forEach { it ->

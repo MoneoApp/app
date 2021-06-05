@@ -36,6 +36,7 @@ query ManualById($id:ID!) {
     id
     title
     device{
+      id
       model
       brand
       image
