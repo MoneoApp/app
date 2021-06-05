@@ -23,16 +23,18 @@ import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
 import ml.moneo.app.view.component.ContextPopup
 import ml.moneo.app.view.component.CoolCamera
+import ml.moneo.app.view.component.QRSwitch
 import java.util.*
 
 @Composable
 fun WelcomeView() {
     var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
+    var useQR by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
     var catalogOpen = false
 
-    CoolCamera({ result ->
+    CoolCamera(useQR, { result ->
         if (result.isEmpty()) {
             return@CoolCamera
         }
@@ -68,7 +70,7 @@ fun WelcomeView() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsHeight(12.dp)
+                .statusBarsHeight(64.dp)
                 .background(
                     Brush.verticalGradient(
                         listOf(
@@ -77,7 +79,11 @@ fun WelcomeView() {
                         )
                     )
                 )
-        )
+        ) {
+            Row(Modifier.padding(top = 40.dp, start = 16.dp)) {
+                QRSwitch { useQR = it }
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +106,10 @@ fun WelcomeView() {
                     .padding(vertical = 24.dp)
                     .align(Alignment.Center)
             )
-            Box(Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
+            Box(
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 16.dp)) {
                 ContextPopup()
             }
         }

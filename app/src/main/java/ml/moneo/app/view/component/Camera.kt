@@ -13,7 +13,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 
 @Composable
-fun Camera(getCases: () -> Array<UseCase> = { arrayOf() }, onError: () -> Unit) {
+fun Camera(useCase: UseCase, onError: () -> Unit) {
     val owner = LocalLifecycleOwner.current
 
     AndroidView(
@@ -40,7 +40,7 @@ fun Camera(getCases: () -> Array<UseCase> = { arrayOf() }, onError: () -> Unit) 
                         owner,
                         CameraSelector.DEFAULT_BACK_CAMERA,
                         preview,
-                        *getCases()
+                        useCase
                     )
                 } catch (e: Exception) {
                     Log.d("moneta.camera", "Camera lifecycle binding failed", e)
