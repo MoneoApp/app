@@ -1,25 +1,16 @@
 package ml.moneo.app.view
 
-import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Support
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
@@ -30,21 +21,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.activity.CreditsActivity
-import ml.moneo.app.activity.HelpActivity
-import ml.moneo.app.activity.PreferenceActivity
-import ml.moneo.app.util.openActivity
+import ml.moneo.app.view.component.ContextPopup
 import ml.moneo.app.view.component.CoolCamera
+import ml.moneo.app.view.component.QRSwitch
 import java.util.*
 
 @Composable
 fun WelcomeView() {
     var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
+    var useQR by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var catalogOpen = false
 
-    CoolCamera({ result ->
+    CoolCamera(useQR, { result ->
         if (result.isEmpty()) {
             return@CoolCamera
         }
@@ -80,7 +70,7 @@ fun WelcomeView() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsHeight(12.dp)
+                .statusBarsHeight(64.dp)
                 .background(
                     Brush.verticalGradient(
                         listOf(
@@ -89,7 +79,11 @@ fun WelcomeView() {
                         )
                     )
                 )
-        )
+        ) {
+            Row(Modifier.padding(top = 40.dp, start = 16.dp)) {
+                QRSwitch(useQR) { useQR = it }
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,7 +106,10 @@ fun WelcomeView() {
                     .padding(vertical = 24.dp)
                     .align(Alignment.Center)
             )
-            Box(Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
+            Box(
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 16.dp)) {
                 ContextPopup()
             }
         }
@@ -142,56 +139,6 @@ fun WelcomeView() {
 
         onDispose {
             job.cancel()
-        }
-    }
-}
-
-sealed class ContextPopupItems(val icon: ImageVector, @StringRes val title: Int, val activity: Class<out Activity>) {
-    object Settings: ContextPopupItems(Icons.Filled.Settings, R.string.context_popup_settings, PreferenceActivity::class.java);
-    object Help: ContextPopupItems(Icons.Filled.Support, R.string.context_popup_help, HelpActivity::class.java);
-    object About: ContextPopupItems(Icons.Filled.Help, R.string.context_popup_about, CreditsActivity::class.java);
-}
-
-@Composable
-fun ContextPopup() {
-    val context = LocalContext.current
-    var expanded by remember { mutableStateOf(false) }
-    val items = listOf(
-        ContextPopupItems.Settings,
-        ContextPopupItems.Help,
-        ContextPopupItems.About
-    )
-
-    IconButton(onClick = { expanded = true }) {
-        Icon(
-            Icons.Filled.MoreVert,
-            contentDescription = "Open context menu",
-            tint = MaterialTheme.colors.onBackground
-        )
-    }
-
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-    ) {
-        items.forEachIndexed { _, s ->
-            DropdownMenuItem(onClick = {
-                openActivity(context, s.activity)
-                expanded = false
-            }) {
-                Row {
-                    Icon(
-                        s.icon,
-                        contentDescription = "Open ${stringResource(s.title)}",
-                        tint = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
-                    Text(text = stringResource(s.title))
-                }
-            }
         }
     }
 }
