@@ -38,7 +38,6 @@ class ManualActivity : AppCompatActivity()
 
 
             val fragment = supportFragmentManager.findFragmentById(R.id.included_manual) as ManualFragment
-            Log.d("Logge", fragment.toString())
             intent.getStringExtra("MANUAL_ID")?.let { Log.d("Logge", it) }
 
             intent.getStringExtra("DEVICE_ID")?.let { deviceId = it }
