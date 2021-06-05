@@ -29,14 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.OnboardingActivity"/>
-        <activity android:name=".activity.ManualActivity"/>
-        <activity android:name=".activity.HelpActivity"/>
-        <activity android:name=".activity.PreferenceActivity"/>
-        <activity android:name=".activity.CreditsActivity"/>
-        <activity android:name=".activity.CatalogsOverviewActivity"/>
         <activity android:name=".activity.OnboardingActivity" />
         <activity android:name=".activity.ManualActivity" />
+        <activity android:name=".activity.HelpActivity" />
+        <activity android:name=".activity.PreferenceActivity" />
+        <activity android:name=".activity.CreditsActivity" />
         <activity android:name=".activity.CatalogsOverviewActivity" />
     </application>
 </manifest>
