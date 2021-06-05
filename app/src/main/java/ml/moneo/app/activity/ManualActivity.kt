@@ -36,7 +36,6 @@ class ManualActivity : AppCompatActivity()
             setContentView(R.layout.activity_main);
             var deviceId = ""
 
-            Log.d("Logge", "Hibabe")
 
             val fragment = supportFragmentManager.findFragmentById(R.id.included_manual) as ManualFragment
             Log.d("Logge", fragment.toString())
