@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import com.google.mlkit.vision.label.ImageLabel
-import ml.moneo.app.util.QRAnalyzer
 import ml.moneo.app.util.TFAnalyzer
 import java.util.concurrent.Executors
 
@@ -16,7 +15,7 @@ fun CoolCamera(
     onError: () -> Unit
 ) {
     val tfExecutor = remember { Executors.newSingleThreadExecutor() }
-    val qrExecutor = remember { Executors.newSingleThreadExecutor() }
+//    val qrExecutor = remember { Executors.newSingleThreadExecutor() }
 
     Camera(
         getCases = {
@@ -24,9 +23,9 @@ fun CoolCamera(
                 ImageAnalysis.Builder()
                     .build()
                     .also { it.setAnalyzer(tfExecutor, TFAnalyzer(onSuccess, onError)) },
-                ImageAnalysis.Builder()
-                    .build()
-                    .also { it.setAnalyzer(qrExecutor, QRAnalyzer(onJump, onError)) }
+//                ImageAnalysis.Builder()
+//                    .build()
+//                    .also { it.setAnalyzer(qrExecutor, QRAnalyzer(onJump, onError)) }
             )
         },
         onError = onError
@@ -35,7 +34,7 @@ fun CoolCamera(
     DisposableEffect(Unit) {
         onDispose {
             tfExecutor.shutdown()
-            qrExecutor.shutdown()
+//            qrExecutor.shutdown()
         }
     }
 }

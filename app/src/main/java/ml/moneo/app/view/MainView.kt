@@ -12,8 +12,6 @@ import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Support
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,37 +23,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ml.moneo.app.R
-import ml.moneo.app.activity.HelpActivity
-import ml.moneo.app.util.openActivity
 import ml.moneo.app.activity.CatalogsOverviewActivity
-import ml.moneo.app.view.component.CoolCamera
 import ml.moneo.app.activity.CreditsActivity
+import ml.moneo.app.activity.HelpActivity
 import ml.moneo.app.activity.PreferenceActivity
-import java.io.IOException
-import java.util.ArrayList
+import ml.moneo.app.util.openActivity
+import ml.moneo.app.view.component.CoolCamera
+import java.util.*
 
 @Composable
 fun WelcomeView() {
     var possibleIds by remember { mutableStateOf(mutableListOf<String>()) }
     val context = LocalContext.current
-    val labels = remember {
-        try {
-            val inputStream = context.assets.open("labels.txt")
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-
-            inputStream.read(buffer)
-            String(buffer).split("\n", "\r\n")
-        } catch (e: IOException) {
-            e.printStackTrace()
-            listOf()
-        }
-    }
 
     var catalogOpen = false
 
@@ -66,11 +51,12 @@ fun WelcomeView() {
 
         val list = mutableListOf<String>()
         result.forEach {
-            val identification = labels[it.index]
+            val identification = it.text
 
-            if (identification == "Background") {
+            if (identification.equals("background", true)) {
                 return@CoolCamera
             }
+
             list.add(identification)
         }
 
@@ -114,7 +100,8 @@ fun WelcomeView() {
                             MaterialTheme.colors.background
                         )
                     )
-                ),
+                )
+                .navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -125,8 +112,7 @@ fun WelcomeView() {
                     .padding(vertical = 24.dp)
                     .align(Alignment.Center)
             )
-
-            Box(modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
+            Box(Modifier.align(Alignment.CenterEnd).padding(end = 16.dp)) {
                 ContextPopup()
             }
         }

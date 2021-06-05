@@ -1,4 +1,0 @@
-argon
-samsung
-nintendo
-microsoft
