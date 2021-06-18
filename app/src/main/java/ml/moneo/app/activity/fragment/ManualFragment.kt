@@ -160,6 +160,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     node.renderable = renderable
                     node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
+                    node.localRotation = Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat())
 
                     var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
                     var yPos = (((interaction.y.toFloat()) - anchorPosition!!.y.toFloat()) / ((anchorPosition!!.height.toFloat() + anchorPosition!!.y.toFloat()) - anchorPosition!!.y.toFloat())) -.5f
