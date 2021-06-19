@@ -19,7 +19,7 @@ fun apolloClient(): ApolloClient {
     }
 
     instance = ApolloClient.builder()
-        .serverUrl("https://staging.moneo.ml/api")
+        .serverUrl("https://moneo.houf.io/api")
         .okHttpClient(
             OkHttpClient.Builder()
                 .build()

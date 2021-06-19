@@ -12,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.Composable
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.google.ar.core.*
+import com.google.ar.core.exceptions.ImageInsufficientQualityException
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Scene
@@ -31,9 +33,14 @@ import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
 import ml.moneo.type.InteractionType
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import android.widget.Toast
+
+
+
 
 class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private lateinit var manualViewModel: ManualViewModel
@@ -97,7 +104,19 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
     fun setupDatabase(config: Config, session: Session) {
         val db = AugmentedImageDatabase(session)
-        db.addImage("image", manualViewModel.getBitmap().value)
+        try
+        {
+            db.addImage("image", manualViewModel.getBitmap().value)
+        }
+        catch (e: ImageInsufficientQualityException)
+        {
+            val errorToast = Toast.makeText(
+                this.context,
+                "AR Insufficient anchor quality",
+                Toast.LENGTH_SHORT
+            )
+            errorToast.show()
+        }
         config.augmentedImageDatabase = db
     }
 
@@ -159,7 +178,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                             ColorStateList.valueOf(Color.parseColor(it)) })
 
                     node.renderable = renderable
-                    node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
+                    node.localRotation = Quaternion.multiply(Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f), Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat()));
 
                     var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
                     var yPos = (((interaction.y.toFloat()) - anchorPosition!!.y.toFloat()) / ((anchorPosition!!.height.toFloat() + anchorPosition!!.y.toFloat()) - anchorPosition!!.y.toFloat())) -.5f
