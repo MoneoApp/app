@@ -71,7 +71,7 @@ class ManualViewModel : ViewModel() {
         return this.bitmap;
     }
 
-    fun getAnchorPosition(): Interaction? {
+    fun getAnchorData(): Interaction? {
         manual.value!!.device.interactions.forEach { it ->
             if(it.type == InteractionType.ANCHOR)
             {
