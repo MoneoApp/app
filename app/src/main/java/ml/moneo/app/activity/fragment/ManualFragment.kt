@@ -43,6 +43,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private var image: AugmentedImage? = null
 
     private var manualId: String? = null;
+    private val scaleFactor = 45;
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -161,8 +162,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     val node = TransformableNode(this.fragment.transformationSystem)
 
-                    element.layoutParams.height = (interaction.height/anchorData!!.height*45).toInt()
-                    element.layoutParams.width = (interaction.width/anchorData!!.width*45).toInt()
+                    element.layoutParams.height = (interaction.height/anchorData!!.height*scaleFactor).toInt()
+                    element.layoutParams.width = (interaction.width/anchorData!!.width*scaleFactor).toInt()
                     ImageViewCompat.setImageTintList(element,
                         interaction.color?.let {
                             ColorStateList.valueOf(Color.parseColor(it)) })
