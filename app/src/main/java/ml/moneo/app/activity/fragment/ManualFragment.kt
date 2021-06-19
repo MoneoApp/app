@@ -12,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.Composable
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.google.ar.core.*
+import com.google.ar.core.exceptions.ImageInsufficientQualityException
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Scene
@@ -31,9 +33,14 @@ import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
 import ml.moneo.type.InteractionType
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import android.widget.Toast
+
+
+
 
 class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private lateinit var manualViewModel: ManualViewModel
@@ -97,7 +104,19 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
     fun setupDatabase(config: Config, session: Session) {
         val db = AugmentedImageDatabase(session)
-        db.addImage("image", manualViewModel.getBitmap().value)
+        try
+        {
+            db.addImage("image", manualViewModel.getBitmap().value)
+        }
+        catch (e: ImageInsufficientQualityException)
+        {
+            val errorToast = Toast.makeText(
+                this.context,
+                "AR Insufficient anchor quality",
+                Toast.LENGTH_SHORT
+            )
+            errorToast.show()
+        }
         config.augmentedImageDatabase = db
     }
 
