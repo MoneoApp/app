@@ -1,18 +1,13 @@
 package ml.moneo.app.activity.fragment
 
 import android.content.res.ColorStateList
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.runtime.Composable
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,16 +21,11 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ml.moneo.ManualByIdQuery
 import ml.moneo.app.R
 import ml.moneo.app.databinding.FragmentManualBinding
 import ml.moneo.app.viewmodel.ManualViewModel
 import ml.moneo.type.InteractionType
-import java.lang.Exception
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 import android.widget.Toast
 
@@ -148,7 +138,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         val anchorNode = AnchorNode(anchor)
         currentNode = anchorNode
 
-        var anchorPosition: ManualByIdQuery.Interaction? = manualViewModel.getAnchorPosition()
+        var anchorData: ManualByIdQuery.Interaction? = manualViewModel.getAnchorData()
 
         manualViewModel.getInteractions().forEach { interaction ->
             var future = ViewRenderable.builder();
@@ -171,8 +161,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
                     val node = TransformableNode(this.fragment.transformationSystem)
 
-                    element.layoutParams.height = interaction.height.toInt()/10
-                    element.layoutParams.width = interaction.width.toInt()/10
+                    element.layoutParams.height = (interaction.height/anchorData!!.height*45).toInt()
+                    element.layoutParams.width = (interaction.width/anchorData!!.width*45).toInt()
                     ImageViewCompat.setImageTintList(element,
                         interaction.color?.let {
                             ColorStateList.valueOf(Color.parseColor(it)) })
@@ -180,8 +170,8 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                     node.renderable = renderable
                     node.localRotation = Quaternion.multiply(Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f), Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat()));
 
-                    var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
-                    var yPos = (((interaction.y.toFloat()) - anchorPosition!!.y.toFloat()) / ((anchorPosition!!.height.toFloat() + anchorPosition!!.y.toFloat()) - anchorPosition!!.y.toFloat())) -.5f
+                    var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorData!!.x.toFloat()) / ((anchorData!!.width.toFloat() + anchorData!!.x.toFloat()) - anchorData!!.x.toFloat())) -.5f
+                    var yPos = (((interaction.y.toFloat()) - anchorData!!.y.toFloat()) / ((anchorData!!.height.toFloat() + anchorData!!.y.toFloat()) - anchorData!!.y.toFloat())) -.5f
                     var pos = Vector3(
                         (((xPos)) * aImage.extentX),
                         0.0f,
