@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -70,7 +71,7 @@ fun WelcomeView() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsHeight(64.dp)
+                .statusBarsHeight(72.dp)
                 .background(
                     Brush.verticalGradient(
                         listOf(
@@ -80,7 +81,7 @@ fun WelcomeView() {
                     )
                 )
         ) {
-            Row(Modifier.padding(top = 40.dp, start = 16.dp)) {
+            Row(Modifier.padding(16.dp).statusBarsPadding()) {
                 QRSwitch(useQR) { useQR = it }
             }
         }
