@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import ml.moneo.app.R
 import ml.moneo.app.model.Product
 
@@ -47,8 +48,10 @@ class CatalogAdapter : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() 
         fun bindCatalogItem(product: Product) {
             this.itemView.findViewById<TextView>(R.id.catalog_item_name).text = product.name
 
-            //TODO: Set image of product async from cache/download
-            this.itemView.findViewById<ImageView>(R.id.catalog_item_image).setImageResource(product.resId)
+
+            this.itemView.findViewById<ImageView>(R.id.catalog_item_image).load("https://moneo.houf.io/api/${product.remoteId}/full") {
+                placeholder(R.drawable.default_remote)
+            }
         }
 
         override fun onClick(v: View?) {
