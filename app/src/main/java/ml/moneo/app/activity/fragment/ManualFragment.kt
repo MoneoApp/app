@@ -159,8 +159,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                             ColorStateList.valueOf(Color.parseColor(it)) })
 
                     node.renderable = renderable
-                    node.localRotation = Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f)
-                    node.localRotation = Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat())
+                    node.localRotation = Quaternion.multiply(Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f), Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat()));
 
                     var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorPosition!!.x.toFloat()) / ((anchorPosition!!.width.toFloat() + anchorPosition!!.x.toFloat()) - anchorPosition!!.x.toFloat())) -.5f
                     var yPos = (((interaction.y.toFloat()) - anchorPosition!!.y.toFloat()) / ((anchorPosition!!.height.toFloat() + anchorPosition!!.y.toFloat()) - anchorPosition!!.y.toFloat())) -.5f

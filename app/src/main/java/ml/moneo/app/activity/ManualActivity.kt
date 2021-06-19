@@ -45,7 +45,7 @@ class ManualActivity : AppCompatActivity()
                 .getDefaultSharedPreferences(applicationContext)
 
             findViewById<ComposeView>(R.id.my_composable).setContent {
-                AnchorPopup(sharedPreferences.getString("theme", "system")!!, "https://staging.moneo.ml/api/${deviceId}/anchor")
+                AnchorPopup(sharedPreferences.getString("theme", "system")!!, "https://moneo.houf.io/api/${deviceId}/anchor")
             }
         })
     }

@@ -63,7 +63,7 @@ class ManualViewModel : ViewModel() {
     }
 
     fun getAnchorImageURL(): String {
-        return "https://staging.moneo.ml/api/${manual.value!!.device.id}/anchor"
+        return "https://moneo.houf.io/api/${manual.value!!.device.id}/anchor"
     }
 
     fun getBitmap(): LiveData<Bitmap>
