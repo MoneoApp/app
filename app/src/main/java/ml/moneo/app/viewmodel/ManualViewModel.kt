@@ -26,8 +26,7 @@ class ManualViewModel : ViewModel() {
     private val bitmap = MutableLiveData<Bitmap>()
     private val currentStep = MutableLiveData(0)
 
-    fun getManual(): LiveData<Manual>
-    {
+    fun getManual(): LiveData<Manual> {
         return manual
     }
 
@@ -40,14 +39,12 @@ class ManualViewModel : ViewModel() {
     }
 
     fun getInteractions(): List<Interaction1> {
-        var positions = mutableListOf<Vector3>()
-
         return manual.value!!.steps[currentStep.value!!].interactions
     }
 
     fun loadBitmap() {
         try {
-            GlobalScope.launch{
+            GlobalScope.launch {
                 val url = URL(getAnchorImageURL());
                 var connection = url.openConnection() as HttpURLConnection;
                 connection.doInput = true;
@@ -57,7 +54,6 @@ class ManualViewModel : ViewModel() {
                 bitmap.postValue(BitmapFactory.decodeStream(input))
             }
         } catch (e: Exception) {
-            // Log exception
             Log.e("Tagge", e.toString());
         }
     }
@@ -66,15 +62,13 @@ class ManualViewModel : ViewModel() {
         return "https://moneo.houf.io/api/${manual.value!!.device.id}/anchor"
     }
 
-    fun getBitmap(): LiveData<Bitmap>
-    {
+    fun getBitmap(): LiveData<Bitmap> {
         return this.bitmap;
     }
 
     fun getAnchorData(): Interaction? {
         manual.value!!.device.interactions.forEach { it ->
-            if(it.type == InteractionType.ANCHOR)
-            {
+            if (it.type == InteractionType.ANCHOR) {
                 return it;
             }
         }
@@ -102,9 +96,19 @@ class ManualViewModel : ViewModel() {
         };
     }
 
-    fun setupManual(manualId: String)
-    {
-        //manual.postValue(createTestManual())
+    fun currentStep(): Int {
+        return currentStep.value!!
+    }
+
+    fun maxSteps(): Int {
+        return manual.value?.steps?.count()!!
+    }
+
+    fun minSteps(): Int {
+        return manual.value?.steps?.count()!!
+    }
+
+    fun setupManual(manualId: String) {
         val client = apolloClient()
 
         GlobalScope.launch {
@@ -124,89 +128,4 @@ class ManualViewModel : ViewModel() {
             manual.postValue(tManual!!)
         }
     }
-
-//    private fun createTestManual(): Manual {
-//        return Manual(
-//            id = "0",
-//            name = "Test manual",
-//            steps = listOf(
-//                Step(
-//                    "0",
-//                    "Druk op de radio knop.",
-//                    listOf(
-//                        Interaction(
-//                            "0",
-//                            0.000,
-//                            -0.006,
-//                            1.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            0.024,
-//                            -0.006,
-//                            1.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            -0.024,
-//                            -0.006,
-//                            1.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            0.024,
-//                            0.018,
-//                            1.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            -0.024,
-//                            0.018,
-//                            1.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            0.018,
-//                            -0.024,
-//                            3.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        ),
-//                        Interaction(
-//                            "0",
-//                            -0.018,
-//                            -0.024,
-//                            3.0,
-//                            1.0,
-//                            "TestButton0",
-//                            Overlay("0", "overlay0", listOf()),
-//                            listOf()
-//                        )
-//                    )
-//                )
-//            )
-//        )
-//    }
 }
