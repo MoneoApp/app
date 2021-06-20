@@ -3,7 +3,7 @@ package ml.moneo.app.activity.fragment
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +55,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         manualViewModel =
             ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
 
+
         binding.includedStepsPrelaunch.stepsCloseButton.setOnClickListener {
             activity?.finish()
         }
@@ -78,35 +79,52 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
     private fun setupSteps() {
         if (manualViewModel.getManual().value != null) {
 
-            manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
-                binding.includedSteps.manualTextview.text =
-                    getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
-            })
+            binding.includedSteps.previousButton.isEnabled = false
 
-            binding.includedSteps.nextButton.setOnClickListener {
-                manualViewModel.next()
+            if (manualViewModel.getManual().value != null) {
 
-                if (active) {
-                    showLayout(this.anchor!!, this.image!!)
+                manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
+                    binding.includedSteps.manualTextview.text =
+                        getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
+                })
+
+                binding.includedSteps.nextButton.setOnClickListener {
+                    manualViewModel.next()
+
+                    if (manualViewModel.currentStep() >= (manualViewModel.maxSteps() - 1)) {
+                        it.isEnabled = false
+                    }
+                    binding.includedSteps.previousButton.isEnabled = true
+
+
+                    if (active) {
+                        showLayout(this.anchor!!, this.image!!)
+                    }
                 }
-            }
 
-            binding.includedSteps.previousButton.setOnClickListener {
-                manualViewModel.previous()
+                binding.includedSteps.previousButton.setOnClickListener {
+                    manualViewModel.previous()
 
-                if (active) {
-                    showLayout(this.anchor!!, this.image!!)
+                    if (manualViewModel.currentStep() <= (manualViewModel.minSteps())) {
+                        it.isEnabled = false
+                    }
+                    binding.includedSteps.nextButton.isEnabled = true
+
+                    if (active) {
+                        showLayout(this.anchor!!, this.image!!)
+                    }
                 }
+
+                binding.includedSteps.stepsCloseButton.setOnClickListener {
+                    activity?.finish()
+                }
+
+                fragment =
+                    this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
+                fragment.arSceneView.scene.addOnUpdateListener(this)
+
+                fragment.arSceneView.planeRenderer.isEnabled = false;
             }
-
-            binding.includedSteps.stepsCloseButton.setOnClickListener {
-                activity?.finish()
-            }
-
-            fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
-            fragment.arSceneView.scene.addOnUpdateListener(this)
-
-            fragment.arSceneView.planeRenderer.isEnabled = false;
         }
     }
 
