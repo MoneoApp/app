@@ -38,6 +38,10 @@ class ManualStepsFragment : Fragment() {
             helpViewModel.previous()
         }
 
+        binding.steps.stepsCloseButton.setOnClickListener {
+            activity?.finish()
+        }
+
         return binding.root
     }
 }
