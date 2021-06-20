@@ -3,6 +3,9 @@ package ml.moneo.app.activity.fragment
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.transition.Visibility
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +31,8 @@ import ml.moneo.app.viewmodel.ManualViewModel
 import ml.moneo.type.InteractionType
 import java.util.*
 import android.widget.Toast
-
-
+import androidx.constraintlayout.motion.utils.ViewState
+import kotlin.concurrent.schedule
 
 
 class ManualFragment : Fragment(), Scene.OnUpdateListener {
@@ -53,10 +56,31 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         super.onCreateView(inflater, container, savedInstanceState)
 
         binding = FragmentManualBinding.inflate(inflater, container, false)
-        manualViewModel = ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
+        manualViewModel =
+            ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
 
-        if(manualViewModel.getManual().value != null)
-        {
+        binding.includedStepsPrelaunch.stepsCloseButton.setOnClickListener {
+            activity?.finish()
+        }
+
+        swapStepView(false)
+
+        return binding.root
+    }
+
+    private fun swapStepView(showSteps: Boolean) {
+        if (showSteps) {
+            binding.includedSteps.root.visibility = View.VISIBLE
+            binding.includedStepsPrelaunch.root.visibility = View.GONE
+        } else {
+            binding.includedSteps.root.visibility = View.GONE
+            binding.includedStepsPrelaunch.root.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupSteps() {
+        if (manualViewModel.getManual().value != null) {
+
             manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
                 binding.includedSteps.manualTextview.text =
                     getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
@@ -65,8 +89,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             binding.includedSteps.nextButton.setOnClickListener {
                 manualViewModel.next()
 
-                if(active)
-                {
+                if (active) {
                     showLayout(this.anchor!!, this.image!!)
                 }
             }
@@ -74,13 +97,12 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             binding.includedSteps.previousButton.setOnClickListener {
                 manualViewModel.previous()
 
-                if(active)
-                {
+                if (active) {
                     showLayout(this.anchor!!, this.image!!)
                 }
             }
 
-            binding.includedSteps.stepsCloseButton.setOnClickListener{
+            binding.includedSteps.stepsCloseButton.setOnClickListener {
                 activity?.finish()
             }
 
@@ -89,18 +111,13 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
 
             fragment.arSceneView.planeRenderer.isEnabled = false;
         }
-
-        return binding.root
     }
 
     fun setupDatabase(config: Config, session: Session) {
         val db = AugmentedImageDatabase(session)
-        try
-        {
+        try {
             db.addImage("image", manualViewModel.getBitmap().value)
-        }
-        catch (e: ImageInsufficientQualityException)
-        {
+        } catch (e: ImageInsufficientQualityException) {
             val errorToast = Toast.makeText(
                 this.context,
                 "AR Insufficient anchor quality",
@@ -122,17 +139,16 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             if (!active) {
                 active = true
                 showLayout(this.anchor!!, image)
+                setupSteps()
+                swapStepView(true)
             }
         }
     }
 
     private fun showLayout(anchor: Anchor, aImage: AugmentedImage) {
-        if(currentNode != null)
-        {
+        if (currentNode != null) {
             fragment.arSceneView.scene.removeChild(currentNode)
-        }
-        else
-        {
+        } else {
             fragment.planeDiscoveryController.hide()
         }
 
@@ -144,12 +160,9 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         manualViewModel.getInteractions().forEach { interaction ->
             var future = ViewRenderable.builder();
 
-            if(interaction.type == InteractionType.SQUARE)
-            {
+            if (interaction.type == InteractionType.SQUARE) {
                 future.setView(fragment.context, R.layout.button_square);
-            }
-            else if(interaction.type == InteractionType.CIRCLE)
-            {
+            } else if (interaction.type == InteractionType.CIRCLE) {
                 future.setView(fragment.context, R.layout.button_circle);
             }
 
@@ -158,21 +171,30 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
                 .thenAccept { renderable ->
                     renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
-                    var element = renderable.view.findViewById<ImageView>(R.id.overlay_button) as ImageView
+                    var element =
+                        renderable.view.findViewById<ImageView>(R.id.overlay_button) as ImageView
 
                     val node = TransformableNode(this.fragment.transformationSystem)
 
-                    element.layoutParams.height = (interaction.height/anchorData!!.height*scaleFactor).toInt()
-                    element.layoutParams.width = (interaction.width/anchorData!!.width*scaleFactor).toInt()
+                    element.layoutParams.height =
+                        (interaction.height / anchorData!!.height * scaleFactor).toInt()
+                    element.layoutParams.width =
+                        (interaction.width / anchorData!!.width * scaleFactor).toInt()
                     ImageViewCompat.setImageTintList(element,
                         interaction.color?.let {
-                            ColorStateList.valueOf(Color.parseColor(it)) })
+                            ColorStateList.valueOf(Color.parseColor(it))
+                        })
 
                     node.renderable = renderable
-                    node.localRotation = Quaternion.multiply(Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f), Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat()));
+                    node.localRotation = Quaternion.multiply(
+                        Quaternion.axisAngle(Vector3(1f, 0f, 0f), 90f),
+                        Quaternion.axisAngle(Vector3(0f, 0f, 1f), interaction.rotation.toFloat())
+                    );
 
-                    var xPos = (((interaction.x.toFloat()+(interaction.width.toFloat()/2)) - anchorData!!.x.toFloat()) / ((anchorData!!.width.toFloat() + anchorData!!.x.toFloat()) - anchorData!!.x.toFloat())) -.5f
-                    var yPos = (((interaction.y.toFloat()) - anchorData!!.y.toFloat()) / ((anchorData!!.height.toFloat() + anchorData!!.y.toFloat()) - anchorData!!.y.toFloat())) -.5f
+                    var xPos =
+                        (((interaction.x.toFloat() + (interaction.width.toFloat() / 2)) - anchorData!!.x.toFloat()) / ((anchorData!!.width.toFloat() + anchorData!!.x.toFloat()) - anchorData!!.x.toFloat())) - .5f
+                    var yPos =
+                        (((interaction.y.toFloat()) - anchorData!!.y.toFloat()) / ((anchorData!!.height.toFloat() + anchorData!!.y.toFloat()) - anchorData!!.y.toFloat())) - .5f
                     var pos = Vector3(
                         (((xPos)) * aImage.extentX),
                         0.0f,
