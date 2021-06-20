@@ -3,6 +3,7 @@ package ml.moneo.app.activity.fragment
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         }
 
         swapStepView(false)
+        setupSteps()
 
         return binding.root
     }
@@ -134,7 +136,6 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             if (!active) {
                 active = true
                 showLayout(this.anchor!!, image)
-                setupSteps()
                 swapStepView(true)
             }
         }
