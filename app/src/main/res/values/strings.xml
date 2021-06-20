@@ -18,4 +18,5 @@
     <string name="credits_people">
         Indy Vierboom\nMerijn Monfils\nJordy Wollaars\nLex Houf\nPaul de Koning\nStan van der Linden
     </string>
+    <string name="start_guide_text">Scan het apparaat om vervolgens de interactieve handleiding te starten.</string>
 </resources>

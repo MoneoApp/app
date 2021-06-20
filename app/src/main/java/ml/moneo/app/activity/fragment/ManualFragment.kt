@@ -3,7 +3,7 @@ package ml.moneo.app.activity.fragment
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,51 +55,77 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
         manualViewModel =
             ViewModelProvider(activity as ViewModelStoreOwner).get(ManualViewModel::class.java)
 
-        binding.includedSteps.previousButton.isEnabled = false
 
-        if (manualViewModel.getManual().value != null) {
-            manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
-                binding.includedSteps.manualTextview.text =
-                    getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
-            })
-
-            binding.includedSteps.nextButton.setOnClickListener {
-                manualViewModel.next()
-
-                if (manualViewModel.currentStep() >= (manualViewModel.maxSteps() - 1)) {
-                    it.isEnabled = false
-                }
-                binding.includedSteps.previousButton.isEnabled = true
-
-                if (active) {
-                    showLayout(this.anchor!!, this.image!!)
-                }
-            }
-
-            binding.includedSteps.previousButton.setOnClickListener {
-                manualViewModel.previous()
-
-                if (manualViewModel.currentStep() <= (manualViewModel.minSteps())) {
-                    it.isEnabled = false
-                }
-                binding.includedSteps.nextButton.isEnabled = true
-
-                if (active) {
-                    showLayout(this.anchor!!, this.image!!)
-                }
-            }
-
-            binding.includedSteps.stepsCloseButton.setOnClickListener {
-                activity?.finish()
-            }
-
-            fragment = this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
-            fragment.arSceneView.scene.addOnUpdateListener(this)
-
-            fragment.arSceneView.planeRenderer.isEnabled = false;
+        binding.includedStepsPrelaunch.stepsCloseButton.setOnClickListener {
+            activity?.finish()
         }
 
+        swapStepView(false)
+        setupSteps()
+
         return binding.root
+    }
+
+    private fun swapStepView(showSteps: Boolean) {
+        if (showSteps) {
+            binding.includedSteps.root.visibility = View.VISIBLE
+            binding.includedStepsPrelaunch.root.visibility = View.GONE
+        } else {
+            binding.includedSteps.root.visibility = View.GONE
+            binding.includedStepsPrelaunch.root.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupSteps() {
+        if (manualViewModel.getManual().value != null) {
+
+            binding.includedSteps.previousButton.isEnabled = false
+
+            if (manualViewModel.getManual().value != null) {
+
+                manualViewModel.getCurrentStep().observe(viewLifecycleOwner, {
+                    binding.includedSteps.manualTextview.text =
+                        getString(R.string.manual_step, it + 1, manualViewModel.getDescription())
+                })
+
+                binding.includedSteps.nextButton.setOnClickListener {
+                    manualViewModel.next()
+
+                    if (manualViewModel.currentStep() >= (manualViewModel.maxSteps() - 1)) {
+                        it.isEnabled = false
+                    }
+                    binding.includedSteps.previousButton.isEnabled = true
+
+
+                    if (active) {
+                        showLayout(this.anchor!!, this.image!!)
+                    }
+                }
+
+                binding.includedSteps.previousButton.setOnClickListener {
+                    manualViewModel.previous()
+
+                    if (manualViewModel.currentStep() <= (manualViewModel.minSteps())) {
+                        it.isEnabled = false
+                    }
+                    binding.includedSteps.nextButton.isEnabled = true
+
+                    if (active) {
+                        showLayout(this.anchor!!, this.image!!)
+                    }
+                }
+
+                binding.includedSteps.stepsCloseButton.setOnClickListener {
+                    activity?.finish()
+                }
+
+                fragment =
+                    this.childFragmentManager.findFragmentById(R.id.camera_view) as ARFragment
+                fragment.arSceneView.scene.addOnUpdateListener(this)
+
+                fragment.arSceneView.planeRenderer.isEnabled = false;
+            }
+        }
     }
 
     fun setupDatabase(config: Config, session: Session) {
@@ -128,6 +154,7 @@ class ManualFragment : Fragment(), Scene.OnUpdateListener {
             if (!active) {
                 active = true
                 showLayout(this.anchor!!, image)
+                swapStepView(true)
             }
         }
     }
