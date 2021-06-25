@@ -105,7 +105,7 @@ class ManualViewModel : ViewModel() {
     }
 
     fun minSteps(): Int {
-        return manual.value?.steps?.count()!!
+        return 0
     }
 
     fun setupManual(manualId: String) {
